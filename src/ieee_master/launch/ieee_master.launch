@@ -1,0 +1,9 @@
+<launch>
+	<param name="cv_camera/device_id" type="int" value="0" />
+	<param name="cv_camera/rate" type="double" value="30.0" />
+	<param name="cv_camera/frame_id" type="str" value="camera" />
+	<param name="cv_camera/image_width" type="int" value="1920" />
+	<param name="cv_camera/image_height" type="int" value="1080" />
+	<node name="cv_camera" pkg="cv_camera" type="cv_camera_node" />
+	<node name="image_proc" pkg="image_proc" type="image_proc" ns="cv_camera" />
+</launch>

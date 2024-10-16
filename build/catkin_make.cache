@@ -1,0 +1,2 @@
+apriltag:apriltag_ros/apriltag_ros:ieee_master
+-DCATKIN_DEVEL_PREFIX=/home/ubuntu/IEEE_ws/devel -DCMAKE_INSTALL_PREFIX=/home/ubuntu/IEEE_ws/install -G Unix Makefiles

@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/IEEE_ws/devel_isolated/ieee_master
+
+Name: ieee_master
+Description: Description of ieee_master
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

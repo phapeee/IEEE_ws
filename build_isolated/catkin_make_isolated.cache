@@ -1,0 +1,2 @@
+apriltag:apriltag_ros/apriltag_ros:ieee_master
+-G Unix Makefiles -DCATKIN_DEVEL_PREFIX=/home/ubuntu/IEEE_ws/devel_isolated -DCMAKE_INSTALL_PREFIX=/home/ubuntu/IEEE_ws/install_isolated
