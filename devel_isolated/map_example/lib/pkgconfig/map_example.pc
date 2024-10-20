@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/IEEE_ws/devel_isolated/map_example
+
+Name: map_example
+Description: Description of map_example
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

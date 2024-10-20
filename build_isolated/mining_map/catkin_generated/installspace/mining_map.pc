@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/IEEE_ws/install_isolated
+
+Name: mining_map
+Description: Description of mining_map
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lmining_map
+Requires: roscpp geometry_msgs
