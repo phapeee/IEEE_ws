@@ -1,0 +1,248 @@
+<?xml version="1.0" ?>
+<robot name="mecanum" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find mecanum_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find mecanum_description)/urdf/mecanum.trans" />
+<xacro:include filename="$(find mecanum_description)/urdf/mecanum.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="1.873955310859947e-16 7.808147128583113e-16 0.01805489136483609" rpy="0 0 0"/>
+    <mass value="2.2859243336943385"/>
+    <inertia ixx="0.021335" iyy="0.019888" izz="0.039192" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="aluminum_anodized_glossy_blue"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Wheel_Motor_v8__3__1">
+  <inertial>
+    <origin xyz="-0.02895347584776023 -1.8749999902700765e-07 0.006877507255732572" rpy="0 0 0"/>
+    <mass value="0.502933680999153"/>
+    <inertia ixx="7.6e-05" iyy="0.00024" izz="0.000239" ixy="-0.0" iyz="0.0" ixz="2e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.086916 -0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Wheel_Motor_v8__3__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="aluminum_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.086916 -0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Wheel_Motor_v8__3__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Wheel_Motor_v8__2__1">
+  <inertial>
+    <origin xyz="0.02895347584776023 -1.8750000098377573e-07 0.006877507255732572" rpy="0 0 0"/>
+    <mass value="0.502933680999153"/>
+    <inertia ixx="7.6e-05" iyy="0.00024" izz="0.000239" ixy="-0.0" iyz="-0.0" ixz="-2e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.086916 -0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Wheel_Motor_v8__2__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="aluminum_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="0.086916 -0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Wheel_Motor_v8__2__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Wheel_Motor_v8__1__1">
+  <inertial>
+    <origin xyz="-0.028953475847760257 0.0005996017531267744 0.00685133626424822" rpy="0 0 0"/>
+    <mass value="0.502933680999153"/>
+    <inertia ixx="7.6e-05" iyy="0.00024" izz="0.000239" ixy="0.0" iyz="-0.0" ixz="2e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.086916 0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Wheel_Motor_v8__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="aluminum_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.086916 0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Wheel_Motor_v8__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Wheel_Motor_v8_1">
+  <inertial>
+    <origin xyz="0.02895347584776023 1.8749999902700765e-07 0.006877507255732586" rpy="0 0 0"/>
+    <mass value="0.502933680999153"/>
+    <inertia ixx="7.6e-05" iyy="0.00024" izz="0.000239" ixy="-0.0" iyz="-0.0" ixz="-2e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.086916 0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Wheel_Motor_v8_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="aluminum_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="0.086916 0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Wheel_Motor_v8_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_75mm_Mecanum_Wheel_B_v2_1">
+  <inertial>
+    <origin xyz="0.02678367075021032 1.699869142252064e-07 -5.004068940467343e-09" rpy="0 0 0"/>
+    <mass value="0.7615045822081437"/>
+    <inertia ixx="0.000428" iyy="0.00028" izz="0.00028" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.095916 0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Left_75mm_Mecanum_Wheel_B_v2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.095916 0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Left_75mm_Mecanum_Wheel_B_v2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_75mm_Mecanum_Wheel_A_v4_1">
+  <inertial>
+    <origin xyz="0.02678367075025534 -1.704896370746667e-07 -6.5114325216442115e-09" rpy="0 0 0"/>
+    <mass value="0.7615045822081584"/>
+    <inertia ixx="0.000428" iyy="0.00028" izz="0.00028" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.095916 -0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Left_75mm_Mecanum_Wheel_A_v4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.095916 -0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Left_75mm_Mecanum_Wheel_A_v4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_75mm_Mecanum_Wheel_A_v4__1__1">
+  <inertial>
+    <origin xyz="-0.02678367075025541 -2.0451036299162784e-07 -6.511432538991446e-09" rpy="0 0 0"/>
+    <mass value="0.7615045822081584"/>
+    <inertia ixx="0.000428" iyy="0.00028" izz="0.00028" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.095916 -0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Left_75mm_Mecanum_Wheel_A_v4__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="0.095916 -0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Left_75mm_Mecanum_Wheel_A_v4__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_75mm_Mecanum_Wheel_B_v2__1__1">
+  <inertial>
+    <origin xyz="-0.026783670750210292 2.0451030971480044e-07 -6.5113929803573e-09" rpy="0 0 0"/>
+    <mass value="0.761504582208144"/>
+    <inertia ixx="0.000428" iyy="0.00028" izz="0.00028" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.095916 0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Left_75mm_Mecanum_Wheel_B_v2__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="steel_satin"/>
+  </visual>
+  <collision>
+    <origin xyz="0.095916 0.106958 -0.03048" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://mecanum_description/meshes/Left_75mm_Mecanum_Wheel_B_v2__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="Rigid 47" type="fixed">
+  <origin xyz="0.086916 0.106958 0.03048" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Wheel_Motor_v8__3__1"/>
+</joint>
+
+<joint name="Rigid 48" type="fixed">
+  <origin xyz="-0.086916 0.106958 0.03048" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Wheel_Motor_v8__2__1"/>
+</joint>
+
+<joint name="Rigid 49" type="fixed">
+  <origin xyz="0.086916 -0.106958 0.03048" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Wheel_Motor_v8__1__1"/>
+</joint>
+
+<joint name="Rigid 50" type="fixed">
+  <origin xyz="-0.086916 -0.106958 0.03048" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Wheel_Motor_v8_1"/>
+</joint>
+
+<joint name="Revolute 51" type="continuous">
+  <origin xyz="0.009 0.0 0.0" rpy="0 0 0"/>
+  <parent link="Wheel_Motor_v8__1__1"/>
+  <child link="Left_75mm_Mecanum_Wheel_B_v2_1"/>
+  <axis xyz="-1.0 0.0 0.0"/>
+</joint>
+
+<joint name="Revolute 52" type="continuous">
+  <origin xyz="0.009 0.0 0.0" rpy="0 0 0"/>
+  <parent link="Wheel_Motor_v8__3__1"/>
+  <child link="Left_75mm_Mecanum_Wheel_A_v4_1"/>
+  <axis xyz="-1.0 0.0 0.0"/>
+</joint>
+
+<joint name="Revolute 53" type="continuous">
+  <origin xyz="-0.009 0.0 0.0" rpy="0 0 0"/>
+  <parent link="Wheel_Motor_v8__2__1"/>
+  <child link="Left_75mm_Mecanum_Wheel_A_v4__1__1"/>
+  <axis xyz="1.0 0.0 0.0"/>
+</joint>
+
+<joint name="Revolute 54" type="continuous">
+  <origin xyz="-0.009 0.0 0.0" rpy="0 0 0"/>
+  <parent link="Wheel_Motor_v8_1"/>
+  <child link="Left_75mm_Mecanum_Wheel_B_v2__1__1"/>
+  <axis xyz="1.0 0.0 0.0"/>
+</joint>
+
+</robot>
