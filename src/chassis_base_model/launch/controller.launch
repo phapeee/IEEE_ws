@@ -1,9 +1,0 @@
-<launch>
-
-<rosparam file="$(find mecanum_description)/launch/controller.yaml" command="load"/>
-<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="mecanum" args="Revolute 51_position_controller Revolute 52_position_controller Revolute 53_position_controller Revolute 54_position_controller joint_state_controller "/>
-<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
-  <remap from="/joint_states" to="/mecanum/joint_states"/>
-</node>
-
-</launch>
