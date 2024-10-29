@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   mining_map
   roscpp
   interactive_markers
+  tf
 )
 
 ## System dependencies are found with CMake's conventions

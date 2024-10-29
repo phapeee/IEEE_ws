@@ -4,6 +4,8 @@
 <xacro:include filename="$(find mecanum_description)/urdf/materials.xacro" />
 <xacro:include filename="$(find mecanum_description)/urdf/mecanum.trans" />
 <xacro:include filename="$(find mecanum_description)/urdf/mecanum.gazebo" />
+<link name="world_map"/>
+
 <link name="base_link">
   <inertial>
     <origin xyz="1.873955310859947e-16 7.808147128583113e-16 0.01805489136483609" rpy="0 0 0"/>
@@ -192,6 +194,12 @@
     </geometry>
   </collision>
 </link>
+
+<joint name="3d_free_move" type="planar">
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <parent link="world_map"/>
+  <child link="base_link"/>
+</joint>
 
 <joint name="Rigid 47" type="fixed">
   <origin xyz="0.086916 0.106958 0.03048" rpy="0 0 0"/>
