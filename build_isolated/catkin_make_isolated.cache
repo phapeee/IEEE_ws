@@ -1,2 +1,2 @@
-apriltag:apriltag_ros/apriltag_ros:cv_camera:ieee_master
+chassis_base_model:ieee_master:map_example:mining_map
 -G Unix Makefiles -DCATKIN_DEVEL_PREFIX=/home/ubuntu/IEEE_ws/devel_isolated -DCMAKE_INSTALL_PREFIX=/home/ubuntu/IEEE_ws/install_isolated

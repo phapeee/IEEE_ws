@@ -80,22 +80,22 @@ mining_map_EXTERNAL_OBJECTS =
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: CMakeFiles/mining_map.dir/build.make
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libroscpp.so
-/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/aarch64-linux-gnu/libpthread.so
-/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/aarch64-linux-gnu/libboost_chrono.so.1.71.0
-/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/aarch64-linux-gnu/libboost_filesystem.so.1.71.0
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/arm-linux-gnueabihf/libpthread.so
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/arm-linux-gnueabihf/libboost_chrono.so.1.71.0
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/arm-linux-gnueabihf/libboost_filesystem.so.1.71.0
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/librosconsole.so
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/librosconsole_log4cxx.so
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/librosconsole_backend_interface.so
-/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/aarch64-linux-gnu/liblog4cxx.so
-/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/aarch64-linux-gnu/libboost_regex.so.1.71.0
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/arm-linux-gnueabihf/liblog4cxx.so
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/arm-linux-gnueabihf/libboost_regex.so.1.71.0
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libxmlrpcpp.so
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libroscpp_serialization.so
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/librostime.so
-/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/aarch64-linux-gnu/libboost_date_time.so.1.71.0
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/arm-linux-gnueabihf/libboost_date_time.so.1.71.0
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libcpp_common.so
-/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/aarch64-linux-gnu/libboost_system.so.1.71.0
-/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/aarch64-linux-gnu/libboost_thread.so.1.71.0
-/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/aarch64-linux-gnu/libconsole_bridge.so.0.4
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/arm-linux-gnueabihf/libboost_system.so.1.71.0
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/arm-linux-gnueabihf/libboost_thread.so.1.71.0
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/arm-linux-gnueabihf/libconsole_bridge.so.0.4
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: CMakeFiles/mining_map.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ubuntu/IEEE_ws/build_isolated/mining_map/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX shared library /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/mining_map.dir/link.txt --verbose=$(VERBOSE)

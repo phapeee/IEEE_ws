@@ -87,7 +87,9 @@ CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/inclu
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf/LinearMath/Vector3.h
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf/exceptions.h
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf/tf.h
+CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf/tfMessage.h
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf/time_cache.h
+CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf/transform_broadcaster.h
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf/transform_datatypes.h
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf2/LinearMath/Quaternion.h
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf2/LinearMath/Vector3.h
@@ -102,6 +104,7 @@ CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/inclu
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf2_msgs/FrameGraphResponse.h
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf2_ros/buffer.h
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf2_ros/buffer_interface.h
+CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/tf2_ros/transform_broadcaster.h
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/visualization_msgs/InteractiveMarker.h
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/visualization_msgs/InteractiveMarkerControl.h
 CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o: /opt/ros/noetic/include/visualization_msgs/InteractiveMarkerFeedback.h
