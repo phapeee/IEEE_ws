@@ -1,0 +1,25 @@
+<launch>
+
+  <arg name="launch_prefix" default="" /> <!--set to value="gdbserver localhost:10000" for remote debugging-->
+  <arg name="node_namespace" default="apriltag_tag_detection" />
+  <arg name="image_load_path" /> <!-- Where to load image for analysis from -->
+  <arg name="image_save_path" /> <!-- Where to save tag detections image -->
+
+  <!-- Set parameters -->
+  <rosparam command="load" file="$(find apriltag_ros)/config/settings.yaml" ns="$(arg node_namespace)" />
+  <rosparam command="load" file="$(find apriltag_ros)/config/tags.yaml" ns="$(arg node_namespace)" />
+
+  <node pkg="april_tag_detection" type="april_tag_detection" name="$(arg node_namespace)" clear_params="true" launch-prefix="$(arg launch_prefix)" >
+
+    <param name="image_load_path" type="str" value="$(arg image_load_path)" />
+    <param name="image_save_path" type="str" value="$(arg image_save_path)" />
+
+    <!-- Camera intrinsic parameters -->
+    <param name="fx" type="double" value="825.56807" />
+    <param name="fy" type="double" value="824.46193" />
+    <param name="cx" type="double" value="980.49336" />
+    <param name="cy" type="double" value="517.96963" />
+
+  </node>
+
+</launch>

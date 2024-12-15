@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection
+
+Name: april_tag_detection
+Description: Description of april_tag_detection
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib -lapril_tag_detection
+Requires: apriltag_ros roscpp

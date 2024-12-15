@@ -105,9 +105,14 @@ namespace map{
 		}
 
 		geometry_msgs::Pose _pose;
-		_pose.position.x = 32;
+		_pose.position.x = 31.25;
 		_pose.position.y = 6;
-		_pose.orientation.w = 1.0;
+		tf::Quaternion q;
+		q.setRPY(0, 0, M_PI/2);
+		_pose.orientation.x = q.x();
+		_pose.orientation.y = q.y();
+		_pose.orientation.z = q.z();
+		_pose.orientation.w = q.w();
 		original_bot_pose = _pose;
 		Bot = new Box(_pose, 6);
 		Bot_zone = new Box(_pose, 6 + s);
@@ -123,10 +128,14 @@ namespace map{
 		debug_mode = false;
 	}
 
+	void Map::loop(){
+		bot_vel_pub.publish(bot_vel);
+	}
+
 	void Map::init(ros::NodeHandle* nh, std::string id, bool debug){
 
 		debug_mode = debug;
-		bot_pub = nh->advertise<geometry_msgs::Pose>("IMU_sensor", 10);
+		bot_sub = nh->subscribe("robot_pose_ekf/odom_combined", 10, &Map::updateBot, this);
 		bot_vel_pub = nh->advertise<geometry_msgs::Vector3>("Bot_Velocities", 10);
 
 		if (!debug) return;
@@ -296,36 +305,7 @@ namespace map{
 			this->setRunPath(false);
 		};
 		auto resetCallback = [this](const visualization_msgs::InteractiveMarkerFeedbackConstPtr& fb){
-			visualization_msgs::InteractiveMarker int_marker;
-			moveBotMarker(original_bot_pose);
-			if (Map::server->get("container_0", int_marker)){
-				int_marker.pose = original_container0_pose;
-				Map::server->erase("container_0");
-				Map::server->insert(int_marker);
-				updateContainer(0, original_container0_pose);
-			}
-			if (Map::server->get("container_1", int_marker)){
-				int_marker.pose = original_container1_pose;
-				Map::server->erase("container_1");
-				Map::server->insert(int_marker);
-				updateContainer(1, original_container1_pose);
-			}
-			Map::server->applyChanges();
-
-			current_checkpoint = 0;
-			for (auto &p : path){
-				p.action_done = false;
-				p.destination_action_done = false;
-				p.action_started = false;
-				p.destination_action_started = false;
-				p.arrived = false;
-			}
-			bot_vel.x = 0.0;
-			bot_vel.y = 0.0;
-			bot_vel.z = 0.0;
-			setRunPath(false);
-			publishField();
-			markerArray_pub.publish(path_marker);
+			Reset();
 		};
 
 		tf::Vector3 pos(27, -5, 0);
@@ -380,9 +360,9 @@ namespace map{
 		Map::server->setCallback(int_marker.name, resetCallback);
 	}
 
-	void Map::updateBot(geometry_msgs::Pose _pose){
-		Bot->place(_pose);
-		Bot_zone->place(_pose);
+	void Map::updateBot(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& _pose){
+		Bot->place(_pose->pose.pose);
+		Bot_zone->place(_pose->pose.pose);
 		if (debug_mode) updateBotMarker();
 	}
 
@@ -505,10 +485,10 @@ namespace map{
 	}
 
 	void Map::createBotController(geometry_msgs::Vector3 box_size, double controller_scale){
-		auto controllerCallback = [this](const visualization_msgs::InteractiveMarkerFeedbackConstPtr& fb){
+		/*auto controllerCallback = [this](const visualization_msgs::InteractiveMarkerFeedbackConstPtr& fb){
 			this->bot_pub.publish(fb->pose);
-		};
-		makeBoxControl("Bot", Bot->pose, box_size, controller_scale, controllerCallback);\
+		};*/
+		//makeBoxControl("Bot", Bot->pose, box_size, controller_scale, controllerCallback);
 	}
 
 	void Map::createContainersController(geometry_msgs::Vector3 box_size, double controller_scale){
@@ -582,9 +562,8 @@ namespace map{
 			velocity.z = dist.z();
 		}
 		if (abs(angle_dif) > STOP_ANGLE_P && abs(angle_dif) < STOP_ANGLE_N) velocity.z = BOT_MAX_ANGULAR_VELOCITY * (signbit(angle_dif) ? (angle_dif < -H_PI ? 1.0 : -1.0) : (angle_dif > H_PI ? -1.0 : 1.0));
+		//bot_vel = velocity;
 		bot_vel_pub.publish(velocity);
-		bot_vel = velocity;
-
 		if (velocity.x == 0.0 && velocity.y == 0.0 && velocity.z == 0.0) return true;
 		return false;
 	}
@@ -596,7 +575,7 @@ namespace map{
 			Map::server->erase("Bot");
 			Map::server->insert(int_marker);
 			Map::server->applyChanges();
-			updateBot(pose);
+			//updateBot(pose);
 		}
 	}
 
@@ -758,4 +737,39 @@ namespace map{
 
 		collisions->push_back(collision);
 	}
+
+	void Map::Reset(){
+		visualization_msgs::InteractiveMarker int_marker;
+		moveBotMarker(original_bot_pose);
+		if (Map::server->get("container_0", int_marker)){
+			int_marker.pose = original_container0_pose;
+			Map::server->erase("container_0");
+			Map::server->insert(int_marker);
+			updateContainer(0, original_container0_pose);
+		}
+		if (Map::server->get("container_1", int_marker)){
+			int_marker.pose = original_container1_pose;
+			Map::server->erase("container_1");
+			Map::server->insert(int_marker);
+			updateContainer(1, original_container1_pose);
+		}
+		Map::server->applyChanges();
+
+		current_checkpoint = 0;
+		for (auto &p : path){
+			p.action_done = false;
+			p.destination_action_done = false;
+			p.action_started = false;
+			p.destination_action_started = false;
+			p.arrived = false;
+		}
+		bot_vel.x = 0.0;
+		bot_vel.y = 0.0;
+		bot_vel.z = 0.0;
+		setRunPath(false);
+		publishField();
+		markerArray_pub.publish(path_marker);
+		if (reset) reset();
+	}
 }
+

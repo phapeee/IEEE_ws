@@ -6,4 +6,4 @@ if [ ! -z "$_CATKIN_SETUP_DIR" ] && [ "$_CATKIN_SETUP_DIR" != "/home/ubuntu/IEEE
   return 1
 fi
 
-_CATKIN_SETUP_DIR= . "/home/ubuntu/IEEE_ws/devel_isolated/ieee_master/setup.sh"
+_CATKIN_SETUP_DIR= . "/home/ubuntu/IEEE_ws/devel_isolated/motor_controller/setup.sh"

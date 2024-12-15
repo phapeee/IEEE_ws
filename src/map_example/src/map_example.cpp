@@ -5,6 +5,7 @@
 #include <mining_map/Map.h>
 #include <geometry_msgs/Pose.h>
 #include <cmath>
+#include <wiringPi.h>
 
 //map::Map ieee_map(0);
 map::Map ieee_caution(1);
@@ -19,7 +20,7 @@ void botCallBack(const geometry_msgs::Pose& pose){
 }
 
 void updateBotCallback(const geometry_msgs::Pose &pose){
-	ieee_caution.updateBot(pose);
+//	ieee_caution.updateBot(pose);
 }
 
 void dest_action_0(bool& started, bool& done){
@@ -34,6 +35,17 @@ void dest_action_0(bool& started, bool& done){
 	}
 }
 
+void start_bot(bool& started, bool& done){
+	static ros::Time timer;
+	if (!started && !done){
+		started = true;
+	}
+	if (digitalRead(27) == LOW) {
+		done = true;
+		digitalWrite(17, HIGH);
+	}
+}
+
 void dest_action_wait(bool& started, bool& done){
 	static ros::Time timer;
 	if(!started && !done){
@@ -44,6 +56,10 @@ void dest_action_wait(bool& started, bool& done){
 	if (count_down.toSec() >= 1.0){
 		done = true;
 	}
+}
+
+void reset(){
+	digitalWrite(17, LOW);
 }
 
 int main(int argc, char** argv){
@@ -71,7 +87,7 @@ int main(int argc, char** argv){
 
 	unsigned int pad_num = 0;
 	geometry_msgs::Pose bot_pose = ieee_caution.original_bot_pose;
-	ieee_caution.addCheckPoint(pad_num++, tf::Vector3(bot_pose.position.x, bot_pose.position.y, 0), 0, map::Map::doNothing, dest_action_0);
+	ieee_caution.addCheckPoint(pad_num++, tf::Vector3(bot_pose.position.x, bot_pose.position.y, 0), 0, map::Map::doNothing, start_bot);
 	ieee_caution.addCheckPoint(pad_num++, tf::Vector3(bot_pose.position.x, 9, 0), 0, map::Map::doNothing, dest_action_wait);
 	ieee_caution.addCheckPoint(pad_num++, tf::Vector3(9, 9, 0), M_PI / 2.0, map::Map::doNothing, dest_action_wait);
 	ieee_caution.addCheckPoint(pad_num++, tf::Vector3(9, 36, 0), 0, map::Map::doNothing, dest_action_wait);
@@ -87,11 +103,18 @@ int main(int argc, char** argv){
 	ieee_caution.addCheckPoint(pad_num++, tf::Vector3(bot_pose.position.x, bot_pose.position.y, 0), M_PI / 2, map::Map::doNothing, dest_action_wait);
 	ieee_caution.publishField();
 
+	ieee_caution.reset = reset;
+
+	wiringPiSetupGpio();
+	pinMode(17, OUTPUT);
+	pinMode(27, INPUT);
+
 	while(ros::ok()){
 
 		ieee_caution.checkCollision();
 		ieee_caution.followPath();
-		ieee_caution.pseudoMoveBot();
+//		ieee_caution.pseudoMoveBot();
+		ieee_caution.loop();
 /*
 		ros::Time now = ros::Time::now();
 

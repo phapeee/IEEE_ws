@@ -268,7 +268,7 @@ if __name__ == '__main__':
 
         if not args.local:
             # environment at generation time
-            CMAKE_PREFIX_PATH = r'/home/ubuntu/IEEE_ws/devel_isolated/mining_map;/home/ubuntu/IEEE_ws/devel_isolated/keyboard;/home/ubuntu/IEEE_ws/devel_isolated/cv_camera;/home/ubuntu/IEEE_ws/devel_isolated/ieee_master;/home/ubuntu/IEEE_ws/devel_isolated/apriltag_ros;/home/ubuntu/IEEE_ws/devel;/home/ubuntu/catkin_ws/devel;/opt/ros/noetic;/home/ubuntu/IEEE_ws/devel_isolated/apriltag'.split(';')
+            CMAKE_PREFIX_PATH = r'/home/ubuntu/IEEE_ws/devel_isolated/imu_tf;/home/ubuntu/IEEE_ws/devel_isolated/ieee_master;/home/ubuntu/IEEE_ws/devel_isolated/cv_camera;/home/ubuntu/IEEE_ws/devel_isolated/apriltag_tf;/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection;/home/ubuntu/WitStandardProtocol_JY901/ROS/wit/wit_ros_ws/devel;/home/ubuntu/IEEE_ws/devel_isolated/apriltag_ros;/home/ubuntu/IEEE_ws/devel;/home/ubuntu/catkin_ws/devel;/opt/ros/noetic;/home/ubuntu/IEEE_ws/devel_isolated/apriltag'.split(';')
         else:
             # don't consider any other prefix path than this one
             CMAKE_PREFIX_PATH = []

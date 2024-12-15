@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/ubuntu/IEEE_ws/devel_isolated/motor_controller/setup.sh

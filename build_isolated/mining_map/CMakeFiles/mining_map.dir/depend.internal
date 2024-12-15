@@ -8,6 +8,8 @@ CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o
  /opt/ros/noetic/include/geometry_msgs/PointStamped.h
  /opt/ros/noetic/include/geometry_msgs/Pose.h
  /opt/ros/noetic/include/geometry_msgs/PoseStamped.h
+ /opt/ros/noetic/include/geometry_msgs/PoseWithCovariance.h
+ /opt/ros/noetic/include/geometry_msgs/PoseWithCovarianceStamped.h
  /opt/ros/noetic/include/geometry_msgs/Quaternion.h
  /opt/ros/noetic/include/geometry_msgs/QuaternionStamped.h
  /opt/ros/noetic/include/geometry_msgs/Transform.h
@@ -88,7 +90,9 @@ CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o
  /opt/ros/noetic/include/tf/LinearMath/Vector3.h
  /opt/ros/noetic/include/tf/exceptions.h
  /opt/ros/noetic/include/tf/tf.h
+ /opt/ros/noetic/include/tf/tfMessage.h
  /opt/ros/noetic/include/tf/time_cache.h
+ /opt/ros/noetic/include/tf/transform_broadcaster.h
  /opt/ros/noetic/include/tf/transform_datatypes.h
  /opt/ros/noetic/include/tf2/LinearMath/Quaternion.h
  /opt/ros/noetic/include/tf2/LinearMath/Vector3.h
@@ -103,6 +107,7 @@ CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o
  /opt/ros/noetic/include/tf2_msgs/FrameGraphResponse.h
  /opt/ros/noetic/include/tf2_ros/buffer.h
  /opt/ros/noetic/include/tf2_ros/buffer_interface.h
+ /opt/ros/noetic/include/tf2_ros/transform_broadcaster.h
  /opt/ros/noetic/include/visualization_msgs/InteractiveMarker.h
  /opt/ros/noetic/include/visualization_msgs/InteractiveMarkerControl.h
  /opt/ros/noetic/include/visualization_msgs/InteractiveMarkerFeedback.h

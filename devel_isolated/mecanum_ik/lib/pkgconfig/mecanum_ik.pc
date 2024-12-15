@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik
+
+Name: mecanum_ik
+Description: Description of mecanum_ik
+Version: 0.0.0
+Cflags: -I/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/include -I/home/ubuntu/IEEE_ws/src/mecanum_ik/include
+Libs: -L${prefix}/lib -lmecanum_ik
+Requires: message_runtime geometry_msgs roscpp

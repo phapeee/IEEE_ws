@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/IEEE_ws/install_isolated
+
+Name: mecanum_odometry
+Description: Description of mecanum_odometry
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: roscpp

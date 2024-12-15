@@ -7,3 +7,6 @@
 # new environment variables
 
 # modified environment variables
+export CMAKE_PREFIX_PATH="/home/ubuntu/IEEE_ws/devel_isolated/ieee_master:$CMAKE_PREFIX_PATH"
+export ROSLISP_PACKAGE_DIRECTORIES="/home/ubuntu/IEEE_ws/devel_isolated/ieee_master/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
+export ROS_PACKAGE_PATH="/home/ubuntu/IEEE_ws/src/ieee_master:$ROS_PACKAGE_PATH"

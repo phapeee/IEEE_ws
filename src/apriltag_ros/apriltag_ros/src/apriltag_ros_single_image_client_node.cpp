@@ -56,6 +56,10 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
   ros::NodeHandle pnh("~");
 
+  double rate_arg;
+  pnh.param<double>("rate", rate_arg, 30);
+  ros::Rate rate(rate_arg);
+
   ros::ServiceClient client =
       nh.serviceClient<apriltag_ros::AnalyzeSingleImage>(
           "single_image_tag_detection");
@@ -100,22 +104,35 @@ int main(int argc, char **argv)
   service.request.camera_info.P[5] = fy;
   service.request.camera_info.P[6] = cy;
   service.request.camera_info.P[10] = 1.0;
-
-  // Call the service (detect tags in the image specified by the
-  // image_load_path)
-  if (client.call(service))
-  {
-    // use parameter run_quielty=false in order to have the service
-    // print out the tag position and orientation
-    if (service.response.tag_detections.detections.size() == 0)
-    {
-      ROS_WARN_STREAM("No detected tags!");
-    }
+  
+   if (ros::service::waitForService("single_image_tag_detection", ros::Duration(5.0))) {
+    // Service is available, proceed with your logic
+    ROS_INFO("Service 'single_image_tag_detection' is available!");
+  } else {
+    // Service did not become available within the timeout
+    ROS_ERROR("Failed to wait for service 'single_image_tag_detection'");
   }
-  else
-  {
-    ROS_ERROR("Failed to call service single_image_tag_detection");
-    return 1;
+
+  while (ros::ok()){
+
+  	// Call the service (detect tags in the image specified by the
+  	// image_load_path)
+  	if (client.call(service))
+  	{
+    	// use parameter run_quielty=false in order to have the service
+    	// print out the tag position and orientation
+    		if (service.response.tag_detections.detections.size() == 0)
+    		{
+      			ROS_WARN_STREAM("No detected tags!");
+    		}
+  	}
+  	else
+  	{
+    		ROS_ERROR("Failed to call service single_image_tag_detection");
+    		return 1;
+  	}
+  	
+  	rate.sleep();
   }
 
   return 0; // happy ending

@@ -1,6 +1,7 @@
 #include <interactive_markers/interactive_marker_server.h>
 #include <visualization_msgs/InteractiveMarkerFeedback.h>
 #include <visualization_msgs/InteractiveMarkerControl.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <visualization_msgs/InteractiveMarker.h>
 #include <interactive_markers/menu_handler.h>
 #include <visualization_msgs/MarkerArray.h>
@@ -20,8 +21,8 @@
 namespace map{
 	#define H_PI				(M_PI / 2)
 	#define TO_DEGREE			(180.0 / M_PI)
-	#define BOT_MAX_LINEAR_VELOCITY 	(5)
-	#define BOT_MAX_ANGULAR_VELOCITY 	(0.8)
+	#define BOT_MAX_LINEAR_VELOCITY 	(3)
+	#define BOT_MAX_ANGULAR_VELOCITY 	(0.25)
 	#define STOP_RADIUS 			(0.01)
 	#define STOP_ANGLE_P 			(0.01)
 	#define STOP_ANGLE_N 			(M_PI - 0.01)
@@ -90,16 +91,21 @@ namespace map{
 			const static uint8_t CONTAINER1 = 1;
 			const static uint8_t CONTAINER2 = 2;
 			const static uint8_t BOT = 3;
+			const static uint8_t NORTH_TAG_ID = 1;
+			const static uint8_t SOUTH_TAG_ID = 2;
+			const static uint8_t EAST_TAG_ID = 7;
 		private:
+			static uint8_t WEST_TAG_ID;
 			Segment* Walls[WALL_COUNT];
 			Box* Containers[CONTAINER_COUNT];
 			Box* Bot;
 			Box* Bot_zone;
+			geometry_msgs::Vector3 bot_vel;
 
 			ros::Publisher marker_pub;
 	                ros::Publisher markerArray_pub;
-	                ros::Publisher bot_pub;
 	                ros::Publisher bot_vel_pub;
+	                ros::Subscriber bot_sub;
 
 			visualization_msgs::Marker field;
 			visualization_msgs::Marker actual_field;
@@ -122,16 +128,16 @@ namespace map{
 			bool debug_mode;
 			unsigned int current_checkpoint = 0;
 			bool run_path = false;
-
-			geometry_msgs::Vector3 bot_vel;
-
 		public:
 			geometry_msgs::Pose original_bot_pose;
 			geometry_msgs::Pose original_container0_pose;
 			geometry_msgs::Pose original_container1_pose;
 
+			std::function<void(void)> reset;
+
 			Map(double);
 			void init(ros::NodeHandle*, std::string id="0", bool debug=false);
+			void loop(void);
 			void subscribeBot(ros::NodeHandle*, std::string);
 			void publishField();
 			void setContainersColor(double, double, double, double a=1.0);
@@ -141,7 +147,7 @@ namespace map{
 			void createBotController(geometry_msgs::Vector3, double);
 			void createContainersController(geometry_msgs::Vector3, double);
 			void tfBroadcastBot(ros::NodeHandle*);
-			void updateBot(geometry_msgs::Pose);
+			void updateBot(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr&);
 			void updateContainer(uint8_t, geometry_msgs::Pose);
 			void updateBotMarker();
 			void updateContainerMarkers();
@@ -155,6 +161,7 @@ namespace map{
 			void static startPath(const visualization_msgs::InteractiveMarkerFeedbackConstPtr&, Map*);
 			void pseudoMoveBot();
 			void static doNothing(bool&, bool&);
+			void Reset(void);
 	};
 
 	void cal_intersection(Segment*, Segment*, std::vector<Collision>*);

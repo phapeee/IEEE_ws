@@ -1,2 +1,2 @@
-apriltag:apriltag_ros/apriltag_ros:cv_camera:ieee_master
+april_tag_detection:apriltag:apriltag_ros/apriltag_ros:apriltag_tf:chassis_base_model:cv_camera:ieee_master:imu_tf:keyboard_control:map_example:mecanum_ik:mecanum_odometry:mining_map:motor_controller:ros-keyboard
 -G Unix Makefiles -DCATKIN_DEVEL_PREFIX=/home/ubuntu/IEEE_ws/devel_isolated -DCMAKE_INSTALL_PREFIX=/home/ubuntu/IEEE_ws/install_isolated

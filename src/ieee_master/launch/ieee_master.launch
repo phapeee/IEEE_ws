@@ -1,9 +1,94 @@
 <launch>
+
+<!-- run serial communication between Raspberry Pi and Arduino -->
+	<node name="serial_node" pkg="rosserial_arduino" type="serial_node.py" output="screen">
+		<param name="port" value="/dev/ttyACM0"/>
+		<param name="baud" value="57600"/>
+	</node>
+<!--
+-->
+
+<!-- Parameter settings for camera -->
+<!--
 	<param name="cv_camera/device_id" type="int" value="0" />
 	<param name="cv_camera/frame_id" type="str" value="camera" />
 	<param name="cv_camera/rate" type="double" value="30" />
 	<param name="cv_camera/image_width" type="int" value="1920" />
 	<param name="cv_camera/image_height" type="int" value="1080" />
+	<param name="cv_camera/cv_cap_prop_brightness" type="double" value="50" />
+	<param name="cv_camera/cv_cap_prop_contrast" type="double" value="100" />
+-->
+
+<!-- run camera node -->
+<!--
 	<node name="cv_camera" pkg="cv_camera" type="cv_camera_node" />
 	<node name="image_proc" pkg="image_proc" type="image_proc" ns="cv_camera"/>
+-->
+
+<!-- run april tag detection -->
+<!--
+	<arg name="save_path" default="$(find apriltag_ros)/images/to_detect.jpg" />
+	<arg name="detected_save_path" default="$(find apriltag_ros)/images/detected.jpg" />
+
+	<node name="image_saver" pkg="image_view" type="image_saver">
+		<param name="save_all_image" value="false"/>
+		<param name="filename_format" value="$(arg save_path)"/>
+		<remap from="image" to="cv_camera/image_rect"/>
+	</node>
+
+	<include file="$(find apriltag_ros)/launch/single_image_server.launch"/>
+
+	<include file="$(find april_tag_detection)/launch/april_tag_detection.launch">
+		<arg name="image_load_path" value="$(arg save_path)" />
+		<arg name="image_save_path" value="$(arg detected_save_path)" />
+		<param name="rate" value="30"/>
+	</include>
+
+	<node name="apriltag_tf" pkg="apriltag_tf" type="apriltag_tf" output="screen"/>
+-->
+
+<!-- run and use keyboard to control robot -->
+	<node name="keyboard" pkg="keyboard" type="keyboard"/>
+	<node name="keyboard_control" pkg="keyboard_control" type="keyboard_control" output="screen" />
+<!--
+-->
+
+<!-- run inverse kinematic for mecanum wheel -->
+	<node name="mecanum_ik" pkg="mecanum_ik" type="mecanum_ik"/>
+<!--
+-->
+
+<!-- run mapping control -->
+<!--
+	<node name="rviz" pkg="rviz" type="rviz" />
+-->
+	<node name="map_example" pkg="map_example" type="map_example_node" />
+
+<!-- run IMU -->
+	<include file="$(find wit_ros_imu)/launch/wit_imu.launch">
+		<param name="arg" value="normal"/>
+	</include>
+	<node name="imu_tf" pkg="imu_tf" type="imu_tf"/>
+<!--
+-->
+
+<!-- run mecanum odometry -->
+	<node name="mecanum_odometry" pkg="mecanum_odometry" type="mecanum_odometry"/>
+<!--
+-->
+
+<!-- run sensor fusion & Kalman filter -->
+	<node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
+		<param name="output_frame" value="odom_combined"/>
+		<param name="base_footprint_frame" value="base_link"/>
+		<param name="freq" value="30.0"/>
+		<param name="sensor_timeout" value="1.0"/>
+		<param name="odom_used" value="true"/>
+		<param name="imu_used" value="true"/>
+		<param name="vo_used" value="false"/>
+		<param name="debug" value="false"/>
+		<param name="self_diagnose" value="false"/>
+	</node>
+<!--
+-->
 </launch>
