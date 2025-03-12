@@ -1,0 +1,275 @@
+#include <ros/ros.h>
+#include <std_srvs/Empty.h>
+#include <std_msgs/String.h>
+#include <iostream>
+#include <cstring>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <nav_msgs/Odometry.h>
+#include <geometry_msgs/Pose.h>
+#include "april_tag_detection/GetAprilTag.h"
+#include <cstdlib>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2_ros/static_transform_broadcaster.h>
+#include <tf2_ros/transform_listener.h>
+#include <geometry_msgs/TransformStamped.h>
+#include <geometry_msgs/Transform.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
+#define PORT 8080       // Listening port
+#define MAX_RETRIES 5   // Number of retries if data isn't received
+#define TIMEOUT_SEC 1   // Timeout in seconds for receiving data
+
+geometry_msgs::Pose tag_pose;
+double received_data[8];  // Array to store received data
+int client_socket;
+ros::Publisher tag_pub;
+
+// ApriTags
+bool tag_0_calibrated = false;
+bool tag_1_calibrated = false;
+bool tag_2_calibrated = false;
+bool tag_3_calibrated = false;
+bool tag_4_calibrated = false;
+bool tag_5_calibrated = false;
+bool tag_6_calibrated = false;
+bool tag_7_calibrated = false;
+tf2::Quaternion tag_0_inv;
+tf2::Quaternion tag_1_inv;
+tf2::Quaternion tag_2_inv;
+tf2::Quaternion tag_3_inv;
+tf2::Quaternion tag_4_inv;
+tf2::Quaternion tag_5_inv;
+tf2::Quaternion tag_6_inv;
+tf2::Quaternion tag_7_inv;
+
+// Function to request data from the client
+bool getAprilTags(int client_socket) {
+    int retries = 0;
+
+    while (retries < MAX_RETRIES) {
+        // Request data from client
+        std::string request = "REQ";
+        send(client_socket, request.c_str(), request.size(), 0);
+//        std::cout << "Request sent to client (Attempt " << retries + 1 << "/" << MAX_RETRIES << ")...\n";
+
+        // Set socket timeout for receiving data
+        struct timeval timeout;
+        timeout.tv_sec = TIMEOUT_SEC;
+        timeout.tv_usec = 0;
+        setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof timeout);
+
+        // Check the first few bytes to see if it's a string ("N/A") or actual data
+        char check_buffer[4] = {0};
+        int bytes_received = recv(client_socket, check_buffer, sizeof(check_buffer) - 1, MSG_PEEK); // Peek at incoming data
+
+        if (bytes_received > 0) {
+            check_buffer[bytes_received] = '\0'; // Null-terminate for safety
+
+            if (strncmp(check_buffer, "N/A", 3) == 0) {
+                // Consume the "N/A" message
+                recv(client_socket, check_buffer, sizeof(check_buffer) - 1, 0);
+//                std::cout << "Client has no data available (Received: 'N/A')\n";
+                return false;
+            } else {
+                // Receive the actual 8 double values
+                bytes_received = recv(client_socket, received_data, sizeof(double) * 8, 0);
+                if (bytes_received == sizeof(double) * 8) {
+                    //for (int i = 0; i < 8; i++) {
+                    //    std::cout << "Value " << i << ": " << received_data[i] << std::endl;
+                    //}
+			tag_pose.position.x = received_data[2];
+			tag_pose.position.y = 0;
+			tag_pose.position.z = received_data[3];
+			tag_pose.orientation.x = received_data[4];
+			tag_pose.orientation.y = received_data[5];
+			tag_pose.orientation.z = received_data[6];
+			tag_pose.orientation.w = received_data[7];
+			tag_pub.publish(tag_pose);
+                    // Send acknowledgment
+                    return true;  // Data received successfully
+                }
+            }
+        }
+
+        std::cout << "No response from client. Retrying...\n";
+        retries++;
+    }
+
+    std::cerr << "ERROR: Maximum retries reached. No data received from client.\n";
+    return false;  // Indicate failure
+}
+
+bool getAprilTagPose(april_tag_detection::GetAprilTag::Request &req, 
+                     april_tag_detection::GetAprilTag::Response &res) {
+
+    if (getAprilTags(client_socket)){
+    	res.tag_pose = tag_pose;
+    	return true;
+    }
+    return false;
+}
+
+int main(int argc, char** argv) {
+    ros::init(argc, argv, "capture_apriltag");
+    ros::NodeHandle nh;
+    ros::Rate rate(60);
+    tag_pub = nh.advertise<geometry_msgs::Pose>("tag_pose", 1);
+    ros::ServiceServer service = nh.advertiseService("get_april_tag", getAprilTagPose);
+
+    int server_fd;
+    struct sockaddr_in address;
+    int addrlen = sizeof(address);
+
+    // Create socket
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+        perror("Socket failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Enable SO_REUSEADDR to reuse the port immediately after restarting
+    int opt = 1;
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        perror("setsockopt failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Bind socket to IP and port
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(PORT);
+
+    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
+        perror("Bind failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Listen for connections
+    if (listen(server_fd, 3) < 0) {
+        perror("Listen failed");
+        exit(EXIT_FAILURE);
+    }
+
+    std::cout << "Server listening on port " << PORT << "...\n";
+
+    // Accept client connection
+    if ((client_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
+	perror("Accept failed");
+	exit(EXIT_FAILURE);
+    }
+
+    std::cout << "Client connected.\n";
+
+    ros::spin();
+
+    // Close sockets
+    close(client_socket);
+    close(server_fd);
+
+    return 0;
+}
+
+
+/*
+ros::ServiceClient img_save_client;
+ros::ServiceClient apriltag_client;
+apriltag_ros::AnalyzeSingleImage apriltag_service;
+
+const char* img_save_srv_name = "image_saver/save";
+
+void capture_tag(){
+                if(ros::service::exists(img_save_srv_name, true)){
+                        std_srvs::Empty srv;
+                        if(img_save_client.call(srv)){
+                                ros::Duration(0.5).sleep();
+                                if(apriltag_client.call(apriltag_service))
+                                {
+                                        // use parameter run_quielty=false in order to have the service
+                                        // print out the tag position and orientation
+                                        if (apriltag_service.response.tag_detections.detections.size() == 0){
+                                                ROS_WARN_STREAM("No detected tags!");
+                                        }
+                                }
+                                else{
+                                        ROS_ERROR("Failed to call service single_image_tag_detection");
+                                }
+                        }
+                        else{
+                                ROS_ERROR("Failed to call service %s", img_save_srv_name);
+                        }
+
+                }
+}
+
+bool getRosParameter (ros::NodeHandle& pnh, std::string name, double& param)
+{
+  // Write parameter "name" from ROS Parameter Server into param
+  // Return true if successful, false otherwise
+  if (pnh.hasParam(name.c_str()))
+  {
+    pnh.getParam(name.c_str(), param);
+    ROS_INFO_STREAM("Set camera " << name.c_str() << " = " << param);
+    return true;
+  }
+  else
+  {
+    ROS_ERROR_STREAM("Could not find " << name.c_str() << " parameter!");
+    return false;
+  }
+}
+
+int main(int argc, char** argv){
+        ros::init(argc, argv, "capture_apriltag");
+        ros::NodeHandle nh;
+        ros::NodeHandle pnh("~");
+
+	double rate_arg;
+	pnh.param<double>("rate", rate_arg, 30);
+	ros::Rate rate(rate_arg);
+
+        img_save_client = nh.serviceClient<std_srvs::Empty>(img_save_srv_name);
+
+        apriltag_client = nh.serviceClient<apriltag_ros::AnalyzeSingleImage>("single_image_tag_detection");
+
+        // Get the request parameters
+        apriltag_service.request.full_path_where_to_get_image = apriltag_ros::getAprilTagOption<std::string>( pnh, "image_load_path", "");
+        if (apriltag_service.request.full_path_where_to_get_image.empty())
+        {
+                return 1;
+        }
+        apriltag_service.request.full_path_where_to_save_image =
+        apriltag_ros::getAprilTagOption<std::string>(pnh, "image_save_path", "");
+        if (apriltag_service.request.full_path_where_to_save_image.empty())
+        {
+                return 1;
+        }
+
+        // Replicate sensors_msgs/CameraInfo message (must be up-to-date with the
+        // analyzed image!)  
+        apriltag_service.request.camera_info.distortion_model = "plumb_bob";
+        double fx, fy, cx, cy;
+        if (!getRosParameter(pnh, "fx", fx)) return 1;
+        if (!getRosParameter(pnh, "fy", fy)) return 1;
+        if (!getRosParameter(pnh, "cx", cx)) return 1;
+        if (!getRosParameter(pnh, "cy", cy)) return 1;
+        // Intrinsic camera matrix for the raw (distorted) images
+        apriltag_service.request.camera_info.K[0] = fx;
+        apriltag_service.request.camera_info.K[2] = cx;
+        apriltag_service.request.camera_info.K[4] = fy;
+        apriltag_service.request.camera_info.K[5] = cy;
+        apriltag_service.request.camera_info.K[8] = 1.0;
+        apriltag_service.request.camera_info.P[0] = fx;
+        apriltag_service.request.camera_info.P[2] = cx;
+        apriltag_service.request.camera_info.P[5] = fy;
+        apriltag_service.request.camera_info.P[6] = cy;
+        apriltag_service.request.camera_info.P[10] = 1.0;
+
+        while(ros::ok()){
+		capture_tag();
+		rate.sleep();
+	}
+        return 0;
+}
+
+*/

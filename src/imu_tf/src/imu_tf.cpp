@@ -3,8 +3,10 @@
 #include <tf2_ros/static_transform_broadcaster.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <tf2/LinearMath/Quaternion.h>
+#include <cmath>
 
 #define WAITING_TIME	(2.5)	// Wait for IMU to be stablized
+#define INIT_ANGLE	(M_PI_2)
 
 ros::Publisher imu_pub;
 ros::Time timer;
@@ -17,13 +19,20 @@ void imuPoseCallback(const sensor_msgs::Imu& msg){
 	tf2::Quaternion q(msg.orientation.x, msg.orientation.y,
 			msg.orientation.z, msg.orientation.w);
 	if (!calibrated){
-			calibrated = true;
-			offset_imu = q.inverse();
-			ROS_INFO("IMU calibrated!");
+		calibrated = true;
+		// Create a quaternion for initial angle rotation around Z-axis
+        	tf2::Quaternion rotation_quat;
+        	rotation_quat.setRPY(0, 0, INIT_ANGLE);  // Yaw angle
+
+		offset_imu = rotation_quat * q.inverse();
+        	offset_imu.normalize();
+
+		ROS_INFO("IMU calibrated!");
 		return;
 	}
 	q *= offset_imu;
 	q.normalize();
+
 	calibrated_imu.header.stamp = ros::Time::now();
 	calibrated_imu.orientation.x = q.x();
 	calibrated_imu.orientation.y = q.y();

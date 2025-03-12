@@ -437,9 +437,6 @@ gtest_hide_internal_symbols:BOOL=OFF
 //Dependencies for the target
 gtest_main_LIB_DEPENDS:STATIC=general;gtest;
 
-//The directory containing a CMake configuration file for keyboard.
-keyboard_DIR:PATH=/home/ubuntu/IEEE_ws/devel_isolated/keyboard/share/keyboard/cmake
-
 //Value Computed by CMake
 keyboard_control_BINARY_DIR:STATIC=/home/ubuntu/IEEE_ws/build_isolated/keyboard_control
 

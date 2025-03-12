@@ -17,9 +17,9 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/home/ubuntu/IEEE_ws/devel_isolated/keyboard/include"
   "/home/ubuntu/IEEE_ws/devel_isolated/apriltag_ros/include"
   "/home/ubuntu/IEEE_ws/src/apriltag_ros/apriltag_ros/include"
+  "/home/ubuntu/catkin_ws/devel/include"
   "/opt/ros/noetic/include"
   "/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
   "/usr/include/eigen3"

@@ -1,14 +1,6 @@
 <launch>
 
-<!-- run serial communication between Raspberry Pi and Arduino -->
-	<node name="serial_node" pkg="rosserial_arduino" type="serial_node.py" output="screen">
-		<param name="port" value="/dev/ttyACM0"/>
-		<param name="baud" value="57600"/>
-	</node>
-<!--
--->
-
-<!-- Parameter settings for camera -->
+<!-- run camera node -->
 <!--
 	<param name="cv_camera/device_id" type="int" value="0" />
 	<param name="cv_camera/frame_id" type="str" value="camera" />
@@ -17,16 +9,13 @@
 	<param name="cv_camera/image_height" type="int" value="1080" />
 	<param name="cv_camera/cv_cap_prop_brightness" type="double" value="50" />
 	<param name="cv_camera/cv_cap_prop_contrast" type="double" value="100" />
--->
-
-<!-- run camera node -->
-<!--
 	<node name="cv_camera" pkg="cv_camera" type="cv_camera_node" />
 	<node name="image_proc" pkg="image_proc" type="image_proc" ns="cv_camera"/>
 -->
 
 <!-- run april tag detection -->
 <!--
+	<node name="april_tag_detection" pkg="april_tag_detection" type="april_tag_detection_node" output="screen"/>
 	<arg name="save_path" default="$(find apriltag_ros)/images/to_detect.jpg" />
 	<arg name="detected_save_path" default="$(find apriltag_ros)/images/detected.jpg" />
 
@@ -47,14 +36,8 @@
 	<node name="apriltag_tf" pkg="apriltag_tf" type="apriltag_tf" output="screen"/>
 -->
 
-<!-- run and use keyboard to control robot -->
-	<node name="keyboard" pkg="keyboard" type="keyboard"/>
-	<node name="keyboard_control" pkg="keyboard_control" type="keyboard_control" output="screen" />
-<!--
--->
-
 <!-- run inverse kinematic for mecanum wheel -->
-	<node name="mecanum_ik" pkg="mecanum_ik" type="mecanum_ik"/>
+	<node name="mecanum_ik" pkg="mecanum_ik" type="mecanum_ik_node"/>
 <!--
 -->
 
@@ -62,7 +45,7 @@
 <!--
 	<node name="rviz" pkg="rviz" type="rviz" />
 -->
-	<node name="map_example" pkg="map_example" type="map_example_node" />
+	<node name="mining_map" pkg="mining_map" type="mining_map_node" output="screen"/>
 
 <!-- run IMU -->
 	<include file="$(find wit_ros_imu)/launch/wit_imu.launch">
@@ -72,20 +55,15 @@
 <!--
 -->
 
-<!-- run mecanum odometry -->
-	<node name="mecanum_odometry" pkg="mecanum_odometry" type="mecanum_odometry"/>
-<!--
--->
-
 <!-- run sensor fusion & Kalman filter -->
 	<node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
-		<param name="output_frame" value="odom_combined"/>
+		<param name="output_frame" value="world_map"/>
 		<param name="base_footprint_frame" value="base_link"/>
-		<param name="freq" value="30.0"/>
-		<param name="sensor_timeout" value="1.0"/>
+		<param name="freq" value="100.0"/>
+		<param name="sensor_timeout" value="1"/>
 		<param name="odom_used" value="true"/>
 		<param name="imu_used" value="true"/>
-		<param name="vo_used" value="false"/>
+		<param name="vo_used" value="true"/>
 		<param name="debug" value="false"/>
 		<param name="self_diagnose" value="false"/>
 	</node>

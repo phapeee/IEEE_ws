@@ -1,0 +1,6 @@
+string tag_id
+string cam_id
+---
+uint8[] tag_id
+uint8[] cam_id
+geometry_msgs/Pose[] poses

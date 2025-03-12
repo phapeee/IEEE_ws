@@ -79,6 +79,16 @@ mining_map_EXTERNAL_OBJECTS =
 
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: CMakeFiles/mining_map.dir/src/mining_map/mining_map.cpp.o
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: CMakeFiles/mining_map.dir/build.make
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libinteractive_markers.so
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libtf.so
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libtf2_ros.so
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libactionlib.so
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libmessage_filters.so
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libtf2.so
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libserial.so
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /home/ubuntu/catkin_ws/devel/lib/libmecanum_ik.so
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/lib/libi2c_reader.so
+/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/lib/libapril_tag_detection.so
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /opt/ros/noetic/lib/libroscpp.so
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/aarch64-linux-gnu/libpthread.so
 /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib/libmining_map.so: /usr/lib/aarch64-linux-gnu/libboost_chrono.so.1.71.0

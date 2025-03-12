@@ -489,7 +489,7 @@ gtest_main_LIB_DEPENDS:STATIC=general;gtest;
 image_transport_DIR:PATH=/opt/ros/noetic/share/image_transport/cmake
 
 //The directory containing a CMake configuration file for keyboard.
-keyboard_DIR:PATH=/home/ubuntu/IEEE_ws/devel_isolated/keyboard/share/keyboard/cmake
+keyboard_DIR:PATH=/home/ubuntu/catkin_ws/devel/share/keyboard/cmake
 
 //Path to a library.
 lib:FILEPATH=/opt/ros/noetic/lib/libtf.so

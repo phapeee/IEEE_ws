@@ -29,7 +29,7 @@ namespace map{
 
 			double half_normal_angle;
 			if (vector.x != 0.0) half_normal_angle =  acos(normal.x) / 2.0 * (signbit(normal.y) ? -1.0 : 1.0);
-			else half_normal_angle = normal.x > 0 ? 0.0 : M_PI / 2.0;
+			else half_normal_angle = normal.x > 0 ? 0.0 : M_PI_2;
 			normal_vector_pose.position.x = point1.x + vector.x / 2.0;
 			normal_vector_pose.position.y = point1.y + vector.y / 2.0;
 			normal_vector_pose.orientation.z = sin(half_normal_angle);
@@ -78,7 +78,7 @@ namespace map{
 		pose = _pose;
 	}
 
-        boost::shared_ptr<interactive_markers::InteractiveMarkerServer> Map::server;
+        std::shared_ptr<interactive_markers::InteractiveMarkerServer> Map::server;
         interactive_markers::MenuHandler Map::menu_handler;
 
 	Map::Map(double safe_radius){
@@ -103,12 +103,11 @@ namespace map{
 			p1.z = p2.z = 0;;
 			Walls[index] = new Segment(p1, p2, n[i]);
 		}
-
 		geometry_msgs::Pose _pose;
 		_pose.position.x = 31.25;
 		_pose.position.y = 6;
 		tf::Quaternion q;
-		q.setRPY(0, 0, M_PI/2);
+		q.setRPY(0, 0, M_PI_2);
 		_pose.orientation.x = q.x();
 		_pose.orientation.y = q.y();
 		_pose.orientation.z = q.z();
@@ -128,16 +127,12 @@ namespace map{
 		debug_mode = false;
 	}
 
-	void Map::loop(){
-		bot_vel_pub.publish(bot_vel);
-	}
-
 	void Map::init(ros::NodeHandle* nh, std::string id, bool debug){
-
 		debug_mode = debug;
 		bot_sub = nh->subscribe("robot_pose_ekf/odom_combined", 10, &Map::updateBot, this);
 		bot_vel_pub = nh->advertise<geometry_msgs::Vector3>("Bot_Velocities", 10);
 
+		// don't publish markers if not debugging.
 		if (!debug) return;
 
 		std::string topic_name = "IEEE_map_";
@@ -293,7 +288,11 @@ namespace map{
 		normal_vector_marker.color.g = 1.0;
 		normal_vector_marker.id = marker_count++;
 		normal_vector_markers.markers.push_back(normal_vector_marker);
+		normal_vector_marker.color.b = 1.0;
+		normal_vector_marker.id = marker_count++;
+		normal_vector_markers.markers.push_back(normal_vector_marker);
 		normal_vector_markers_list[BOT] = normal_vector_markers;
+
 
 		updateContainerMarkers();
 		updateBotMarker();
@@ -360,9 +359,12 @@ namespace map{
 		Map::server->setCallback(int_marker.name, resetCallback);
 	}
 
+	geometry_msgs::Pose Map::getBotPose(){
+		return Bot->pose;
+	}
+
 	void Map::updateBot(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& _pose){
 		Bot->place(_pose->pose.pose);
-		Bot_zone->place(_pose->pose.pose);
 		if (debug_mode) updateBotMarker();
 	}
 
@@ -385,7 +387,8 @@ namespace map{
 			normal_vector_markers_list[BOT].markers[i].pose = Bot_zone->oriented_walls[i]->normal_vector_pose;
 		}
 		normal_vector_markers_list[BOT].markers[4].pose = Bot->pose;
-		normal_vector_markers_list[BOT].markers[4].pose.position.z = 1.0;
+		normal_vector_markers_list[BOT].markers[5].pose = Bot->pose;
+		//normal_vector_markers_list[BOT].markers[4].pose.position.z = 1.0;
 
 		marker_pub.publish(bot_marker);
 		marker_pub.publish(bot_zone_marker);
@@ -484,13 +487,6 @@ namespace map{
 		Map::server->applyChanges();
 	}
 
-	void Map::createBotController(geometry_msgs::Vector3 box_size, double controller_scale){
-		/*auto controllerCallback = [this](const visualization_msgs::InteractiveMarkerFeedbackConstPtr& fb){
-			this->bot_pub.publish(fb->pose);
-		};*/
-		//makeBoxControl("Bot", Bot->pose, box_size, controller_scale, controllerCallback);
-	}
-
 	void Map::createContainersController(geometry_msgs::Vector3 box_size, double controller_scale){
 		auto controllerCallback0 = [this](const visualization_msgs::InteractiveMarkerFeedbackConstPtr& fb){
 			this->updateContainer(0, fb->pose);
@@ -503,32 +499,6 @@ namespace map{
 		makeBoxControl("container_1", Containers[1]->pose, box_size, controller_scale, controllerCallback1);
 	}
 
-	void Map::checkCollision(){
-		collisions.clear();
-		for (int i=0; i<4; i++){
-			for (int j=0; j<WALL_COUNT; j++){
-				cal_intersection(Bot_zone->oriented_walls[i], Walls[j], &collisions);
-			}
-			for (int j=0; j<CONTAINER_COUNT; j++){
-				for (int k=0; k<4; k++){
-					cal_intersection(Bot_zone->oriented_walls[i], Containers[j]->oriented_walls[k], &collisions);
-				}
-			}
-		}
-		if (debug_mode){
-			collision_points.markers.clear();
-			collision_point.id = 50;
-			for (const auto& c : collisions){
-				collision_point.pose.position.x = c.a.x;
-				collision_point.pose.position.y = c.a.y;
-				collision_point.pose.position.z = c.a.z;
-				collision_point.id++;
-				collision_points.markers.push_back(collision_point);
-			}
-			markerArray_pub.publish(collision_points);
-		}
-	}
-
 	void Map::followPath(){
 		if (!run_path || path.size() == 0 || current_checkpoint >= path.size()) {
 			setRunPath(false);
@@ -539,30 +509,55 @@ namespace map{
 		else path[current_checkpoint].destination_action(path[current_checkpoint].destination_action_started, path[current_checkpoint].destination_action_done);
 
 		path[current_checkpoint].action(path[current_checkpoint].action_started, path[current_checkpoint].action_done);
-		//ROS_INFO("cp: %d, arrived: %d, action: %d, dest action: %d", (int) current_checkpoint, path[current_checkpoint].arrived, path[current_checkpoint].action_done, path[current_checkpoint].destination_action_done);
 		if (path[current_checkpoint].action_done && path[current_checkpoint].destination_action_done) {
 			current_checkpoint++;
-//			ROS_INFO("DONE!");
 		}
 	}
 
 	bool Map::moveBot(geometry_msgs::Pose dest){
+
+		// global velocity
 		geometry_msgs::Vector3 velocity;
 		velocity.x = 0.0;
 		velocity.y = 0.0;
 		velocity.z = 0.0;
 
-		tf::Vector3 dist(dest.position.x - Bot->pose.position.x, dest.position.y - Bot->pose.position.y, 0);
-		double angle_dif =  asin(dest.orientation.z) - asin(Bot->pose.orientation.z);
-		if (dist.length2() > STOP_RADIUS) {
-			dist.normalize();
-			dist *= BOT_MAX_LINEAR_VELOCITY;
-			velocity.x = dist.x();
-			velocity.y = dist.y();
-			velocity.z = dist.z();
+		tf::Vector3 distance_error(dest.position.x - Bot->pose.position.x, dest.position.y - Bot->pose.position.y, 0);
+		if (dest.position.x < 0) distance_error.setX(0);
+		if (dest.position.y < 0) distance_error.setY(0);
+		double bot_angle = tf::getYaw(Bot->pose.orientation);
+		double angle_error = tf::getYaw(dest.orientation) - bot_angle;
+		angle_error = atan2(sin(angle_error), cos(angle_error));
+
+		if (distance_error.length2() > STOP_RADIUS) {
+			distance_error *= LINEAR_K;
+			if (distance_error.length2() > BOT_MAX_LINEAR_VELOCITY) distance_error = distance_error.normalized() * BOT_MAX_LINEAR_VELOCITY;
+			velocity.x = distance_error.x();
+			velocity.y = distance_error.y();
 		}
-		if (abs(angle_dif) > STOP_ANGLE_P && abs(angle_dif) < STOP_ANGLE_N) velocity.z = BOT_MAX_ANGULAR_VELOCITY * (signbit(angle_dif) ? (angle_dif < -H_PI ? 1.0 : -1.0) : (angle_dif > H_PI ? -1.0 : 1.0));
-		//bot_vel = velocity;
+
+		if (abs(angle_error) > STOP_ANGLE) {
+			velocity.z = angle_error * ANGULAR_K;
+			if (velocity.z > BOT_MAX_ANGULAR_VELOCITY) velocity.z = BOT_MAX_ANGULAR_VELOCITY;
+			else if (velocity.z < BOT_MIN_ANGULAR_VELOCITY) velocity.z = BOT_MIN_ANGULAR_VELOCITY;
+		}
+
+		// convert to local velocity
+		double cos_ang = cos(bot_angle);
+		double sin_ang = sin(bot_angle);
+		double local_velx = cos_ang*velocity.x + sin_ang*velocity.y;
+		double local_vely = -sin_ang*velocity.x + cos_ang*velocity.y;
+		if(debug_mode){
+			tf::Quaternion q;
+	                q.setRPY(0, 0, atan2(velocity.y, velocity.x));
+        	        normal_vector_markers_list[BOT].markers[5].pose.orientation.x = q.x();
+                	normal_vector_markers_list[BOT].markers[5].pose.orientation.y = q.y();
+              		normal_vector_markers_list[BOT].markers[5].pose.orientation.z = q.z();
+                	normal_vector_markers_list[BOT].markers[5].pose.orientation.w = q.w();
+			markerArray_pub.publish(normal_vector_markers_list[BOT]);
+		}
+		velocity.x = local_velx;
+		velocity.y = local_vely;
 		bot_vel_pub.publish(velocity);
 		if (velocity.x == 0.0 && velocity.y == 0.0 && velocity.z == 0.0) return true;
 		return false;
@@ -577,20 +572,6 @@ namespace map{
 			Map::server->applyChanges();
 			//updateBot(pose);
 		}
-	}
-
-	void Map::pseudoMoveBot(){
-		if (!run_path) return;
-		geometry_msgs::Pose new_pose;
-		new_pose.position.x = (double) Bot->pose.position.x + bot_vel.x / 30.0;
-		new_pose.position.y = (double) Bot->pose.position.y + bot_vel.y / 30.0;
-
-		double new_half_angle = (double) asin(Bot->pose.orientation.z) + bot_vel.z / 60.0;
-		if (new_half_angle > H_PI) new_half_angle -= M_PI;
-		else if (new_half_angle < -H_PI) new_half_angle += M_PI;
-		new_pose.orientation.w = (double) cos(new_half_angle);
-		new_pose.orientation.z = (double) sin(new_half_angle);
-		moveBotMarker(new_pose);
 	}
 
 	void Map::addCheckPoint(unsigned int index, tf::Vector3 position, double orientation, Action action, Action dest_action){
@@ -740,7 +721,6 @@ namespace map{
 
 	void Map::Reset(){
 		visualization_msgs::InteractiveMarker int_marker;
-		moveBotMarker(original_bot_pose);
 		if (Map::server->get("container_0", int_marker)){
 			int_marker.pose = original_container0_pose;
 			Map::server->erase("container_0");
@@ -769,6 +749,11 @@ namespace map{
 		setRunPath(false);
 		publishField();
 		markerArray_pub.publish(path_marker);
+		geometry_msgs::Vector3 velocity;
+		velocity.x = 0;
+		velocity.y = 0;
+		velocity.z = 0;
+		bot_vel_pub.publish(velocity);
 		if (reset) reset();
 	}
 }

@@ -53,16 +53,16 @@ CMAKE_BINARY_DIR = /home/ubuntu/IEEE_ws/build_isolated/mecanum_ik
 # Include the progress variables for this target.
 include CMakeFiles/mecanum_ik_generate_messages_nodejs.dir/progress.make
 
-CMakeFiles/mecanum_ik_generate_messages_nodejs: /home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/msg/vector4_msg.js
+CMakeFiles/mecanum_ik_generate_messages_nodejs: /home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/srv/EmptySrv.js
 
 
-/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/msg/vector4_msg.js: /opt/ros/noetic/lib/gennodejs/gen_nodejs.py
-/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/msg/vector4_msg.js: /home/ubuntu/IEEE_ws/src/mecanum_ik/msg/vector4_msg.msg
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/ubuntu/IEEE_ws/build_isolated/mecanum_ik/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating Javascript code from mecanum_ik/vector4_msg.msg"
-	catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/gennodejs/cmake/../../../lib/gennodejs/gen_nodejs.py /home/ubuntu/IEEE_ws/src/mecanum_ik/msg/vector4_msg.msg -Imecanum_ik:/home/ubuntu/IEEE_ws/src/mecanum_ik/msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p mecanum_ik -o /home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/msg
+/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/srv/EmptySrv.js: /opt/ros/noetic/lib/gennodejs/gen_nodejs.py
+/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/srv/EmptySrv.js: /home/ubuntu/IEEE_ws/src/mecanum_ik/srv/EmptySrv.srv
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/ubuntu/IEEE_ws/build_isolated/mecanum_ik/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating Javascript code from mecanum_ik/EmptySrv.srv"
+	catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/gennodejs/cmake/../../../lib/gennodejs/gen_nodejs.py /home/ubuntu/IEEE_ws/src/mecanum_ik/srv/EmptySrv.srv -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p mecanum_ik -o /home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/srv
 
 mecanum_ik_generate_messages_nodejs: CMakeFiles/mecanum_ik_generate_messages_nodejs
-mecanum_ik_generate_messages_nodejs: /home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/msg/vector4_msg.js
+mecanum_ik_generate_messages_nodejs: /home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/srv/EmptySrv.js
 mecanum_ik_generate_messages_nodejs: CMakeFiles/mecanum_ik_generate_messages_nodejs.dir/build.make
 
 .PHONY : mecanum_ik_generate_messages_nodejs

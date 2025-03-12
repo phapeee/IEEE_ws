@@ -7,6 +7,11 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection:$CMAKE_PREFIX_PATH"
-export ROSLISP_PACKAGE_DIRECTORIES="/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
-export ROS_PACKAGE_PATH="/home/ubuntu/IEEE_ws/src/april_tag_detection:$ROS_PACKAGE_PATH"
+export CMAKE_PREFIX_PATH='/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection:/home/ubuntu/WitStandardProtocol_JY901/ROS/wit/wit_ros_ws/devel:/home/ubuntu/catkin_ws/devel:/opt/ros/noetic'
+export LD_LIBRARY_PATH='/home/ubuntu/WitStandardProtocol_JY901/ROS/wit/wit_ros_ws/devel/lib:/home/ubuntu/catkin_ws/devel/lib:/opt/ros/noetic/lib'
+export PATH='/opt/ros/noetic/bin:/home/ubuntu/.local/bin:/home/ubuntu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'
+export PKG_CONFIG_PATH='/home/ubuntu/WitStandardProtocol_JY901/ROS/wit/wit_ros_ws/devel/lib/pkgconfig:/home/ubuntu/catkin_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig'
+export PWD='/home/ubuntu/IEEE_ws/build_isolated/april_tag_detection'
+export PYTHONPATH='/home/ubuntu/catkin_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages'
+export ROSLISP_PACKAGE_DIRECTORIES='/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/share/common-lisp:/home/ubuntu/WitStandardProtocol_JY901/ROS/wit/wit_ros_ws/devel/share/common-lisp:/home/ubuntu/catkin_ws/devel/share/common-lisp'
+export ROS_PACKAGE_PATH='/home/ubuntu/IEEE_ws/src/april_tag_detection:/home/ubuntu/WitStandardProtocol_JY901/ROS/wit/wit_ros_ws/src:/home/ubuntu/catkin_ws/src:/opt/ros/noetic/share'

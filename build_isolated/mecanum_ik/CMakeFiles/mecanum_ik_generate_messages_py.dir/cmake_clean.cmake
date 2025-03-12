@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/lib/python3/dist-packages/mecanum_ik/msg/__init__.py"
-  "/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/lib/python3/dist-packages/mecanum_ik/msg/_vector4_msg.py"
+  "/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/lib/python3/dist-packages/mecanum_ik/srv/_EmptySrv.py"
+  "/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/lib/python3/dist-packages/mecanum_ik/srv/__init__.py"
   "CMakeFiles/mecanum_ik_generate_messages_py"
 )
 

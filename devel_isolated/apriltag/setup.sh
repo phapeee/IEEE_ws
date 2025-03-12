@@ -5,6 +5,8 @@
 if [ -z "$CATKIN_SHELL" ]; then
   CATKIN_SHELL=sh
 fi
+. "/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/setup.$CATKIN_SHELL"
+
 # detect if running on Darwin platform
 _UNAME=`uname -s`
 IS_DARWIN=0

@@ -3,7 +3,7 @@
   <arg name="launch_prefix" default="" />
 
   <!-- configure camera input -->
-  <arg name="camera_name" default="/cv_camera" />
+  <arg name="camera_name" default="cv_camera" />
   <arg name="image_topic" default="image_rect" />
   <arg name="queue_size" default="1" />
 

@@ -88,8 +88,8 @@ keyboard_control_EXTERNAL_OBJECTS =
 /home/ubuntu/IEEE_ws/devel_isolated/keyboard_control/lib/keyboard_control/keyboard_control: /opt/ros/noetic/lib/librosconsole_backend_interface.so
 /home/ubuntu/IEEE_ws/devel_isolated/keyboard_control/lib/keyboard_control/keyboard_control: /usr/lib/aarch64-linux-gnu/liblog4cxx.so
 /home/ubuntu/IEEE_ws/devel_isolated/keyboard_control/lib/keyboard_control/keyboard_control: /usr/lib/aarch64-linux-gnu/libboost_regex.so.1.71.0
-/home/ubuntu/IEEE_ws/devel_isolated/keyboard_control/lib/keyboard_control/keyboard_control: /opt/ros/noetic/lib/libroscpp_serialization.so
 /home/ubuntu/IEEE_ws/devel_isolated/keyboard_control/lib/keyboard_control/keyboard_control: /opt/ros/noetic/lib/libxmlrpcpp.so
+/home/ubuntu/IEEE_ws/devel_isolated/keyboard_control/lib/keyboard_control/keyboard_control: /opt/ros/noetic/lib/libroscpp_serialization.so
 /home/ubuntu/IEEE_ws/devel_isolated/keyboard_control/lib/keyboard_control/keyboard_control: /opt/ros/noetic/lib/librostime.so
 /home/ubuntu/IEEE_ws/devel_isolated/keyboard_control/lib/keyboard_control/keyboard_control: /usr/lib/aarch64-linux-gnu/libboost_date_time.so.1.71.0
 /home/ubuntu/IEEE_ws/devel_isolated/keyboard_control/lib/keyboard_control/keyboard_control: /opt/ros/noetic/lib/libcpp_common.so

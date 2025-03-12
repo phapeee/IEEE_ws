@@ -5,4 +5,4 @@ Description: Description of mining_map
 Version: 0.0.0
 Cflags: -I/home/ubuntu/IEEE_ws/src/mining_map/include
 Libs: -L${prefix}/lib -lmining_map
-Requires: roscpp geometry_msgs
+Requires: roscpp geometry_msgs april_tag_detection

@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/msg/vector4_msg.js"
+  "/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/gennodejs/ros/mecanum_ik/srv/EmptySrv.js"
   "CMakeFiles/mecanum_ik_generate_messages_nodejs"
 )
 

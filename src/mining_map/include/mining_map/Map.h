@@ -6,7 +6,6 @@
 #include <interactive_markers/menu_handler.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <visualization_msgs/Marker.h>
-#include <tf/transform_broadcaster.h>
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Point.h>
 #include <std_msgs/ColorRGBA.h>
@@ -20,12 +19,15 @@
 
 namespace map{
 	#define H_PI				(M_PI / 2)
+	#define M_2PI				(M_PI * 2)
 	#define TO_DEGREE			(180.0 / M_PI)
-	#define BOT_MAX_LINEAR_VELOCITY 	(3)
-	#define BOT_MAX_ANGULAR_VELOCITY 	(0.25)
-	#define STOP_RADIUS 			(0.01)
-	#define STOP_ANGLE_P 			(0.01)
-	#define STOP_ANGLE_N 			(M_PI - 0.01)
+	#define BOT_MAX_LINEAR_VELOCITY 	(10)
+	#define BOT_MAX_ANGULAR_VELOCITY 	(1)
+	#define BOT_MIN_ANGULAR_VELOCITY 	(-BOT_MAX_ANGULAR_VELOCITY)
+	#define STOP_RADIUS 			(0.05)
+	#define STOP_ANGLE 			(0.01)
+	#define LINEAR_K			(1)
+	#define ANGULAR_K			(1)
 
 	typedef std::function<void(const visualization_msgs::InteractiveMarkerFeedbackConstPtr&)> ProcessFeedback;
 	typedef void (*Action)(bool&,bool&);
@@ -87,10 +89,12 @@ namespace map{
 			const static uint8_t WALL_COUNT = 14;
 			const static uint8_t CONTAINER_COUNT = 2;
 			const static uint8_t OBJECTS_COUNT = 4;
+
 			const static uint8_t FIELD = 0;
 			const static uint8_t CONTAINER1 = 1;
 			const static uint8_t CONTAINER2 = 2;
 			const static uint8_t BOT = 3;
+
 			const static uint8_t NORTH_TAG_ID = 1;
 			const static uint8_t SOUTH_TAG_ID = 2;
 			const static uint8_t EAST_TAG_ID = 7;
@@ -103,19 +107,19 @@ namespace map{
 			geometry_msgs::Vector3 bot_vel;
 
 			ros::Publisher marker_pub;
-	                ros::Publisher markerArray_pub;
-	                ros::Publisher bot_vel_pub;
-	                ros::Subscriber bot_sub;
+            ros::Publisher markerArray_pub;
+            ros::Publisher bot_vel_pub;
+            ros::Subscriber bot_sub;
 
 			visualization_msgs::Marker field;
 			visualization_msgs::Marker actual_field;
-                	visualization_msgs::Marker bot_marker;
-                	visualization_msgs::Marker bot_zone_marker;
+        	visualization_msgs::Marker bot_marker;
+        	visualization_msgs::Marker bot_zone_marker;
 			visualization_msgs::Marker collision_point;
 			visualization_msgs::Marker path_arrow;
 			visualization_msgs::Marker path_line;
-                	visualization_msgs::MarkerArray container_markers;
-                	visualization_msgs::MarkerArray normal_vector_markers_list[OBJECTS_COUNT];
+        	visualization_msgs::MarkerArray container_markers;
+        	visualization_msgs::MarkerArray normal_vector_markers_list[OBJECTS_COUNT];
 			visualization_msgs::MarkerArray collision_points;
 			visualization_msgs::MarkerArray path_marker;
 
@@ -123,12 +127,12 @@ namespace map{
 			std::vector<CheckPoint> path;
 			std::vector<unsigned int> checkpoint_list;
 
-			static boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server;
+			static std::shared_ptr<interactive_markers::InteractiveMarkerServer> server;
 			static interactive_markers::MenuHandler menu_handler;
 			bool debug_mode;
 			unsigned int current_checkpoint = 0;
-			bool run_path = false;
 		public:
+			bool run_path = false;
 			geometry_msgs::Pose original_bot_pose;
 			geometry_msgs::Pose original_container0_pose;
 			geometry_msgs::Pose original_container1_pose;
@@ -137,14 +141,12 @@ namespace map{
 
 			Map(double);
 			void init(ros::NodeHandle*, std::string id="0", bool debug=false);
-			void loop(void);
 			void subscribeBot(ros::NodeHandle*, std::string);
 			void publishField();
 			void setContainersColor(double, double, double, double a=1.0);
 			void setContainersWidth(double);
 			void setRunPath(bool);
 			void makeBoxControl(std::string con_name, geometry_msgs::Pose, geometry_msgs::Vector3, double, ProcessFeedback);
-			void createBotController(geometry_msgs::Vector3, double);
 			void createContainersController(geometry_msgs::Vector3, double);
 			void tfBroadcastBot(ros::NodeHandle*);
 			void updateBot(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr&);
@@ -152,7 +154,6 @@ namespace map{
 			void updateBotMarker();
 			void updateContainerMarkers();
 			void updatePathMarker();
-			void checkCollision();
 			void followPath();
 			bool moveBot(geometry_msgs::Pose);
 			void moveBotMarker(geometry_msgs::Pose);
@@ -162,6 +163,7 @@ namespace map{
 			void pseudoMoveBot();
 			void static doNothing(bool&, bool&);
 			void Reset(void);
+			geometry_msgs::Pose getBotPose();
 	};
 
 	void cal_intersection(Segment*, Segment*, std::vector<Collision>*);

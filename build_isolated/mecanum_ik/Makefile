@@ -168,17 +168,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named mecanum_ik
+# Target rules for targets named i2c_reader
 
 # Build rule for target.
-mecanum_ik: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 mecanum_ik
-.PHONY : mecanum_ik
+i2c_reader: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 i2c_reader
+.PHONY : i2c_reader
 
 # fast build rule for target.
-mecanum_ik/fast:
-	$(MAKE) -f CMakeFiles/mecanum_ik.dir/build.make CMakeFiles/mecanum_ik.dir/build
-.PHONY : mecanum_ik/fast
+i2c_reader/fast:
+	$(MAKE) -f CMakeFiles/i2c_reader.dir/build.make CMakeFiles/i2c_reader.dir/build
+.PHONY : i2c_reader/fast
 
 #=============================================================================
 # Target rules for targets named mecanum_ik_genpy
@@ -205,6 +205,19 @@ mecanum_ik_generate_messages_nodejs: cmake_check_build_system
 mecanum_ik_generate_messages_nodejs/fast:
 	$(MAKE) -f CMakeFiles/mecanum_ik_generate_messages_nodejs.dir/build.make CMakeFiles/mecanum_ik_generate_messages_nodejs.dir/build
 .PHONY : mecanum_ik_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named mecanum_ik_generate_messages_lisp
+
+# Build rule for target.
+mecanum_ik_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 mecanum_ik_generate_messages_lisp
+.PHONY : mecanum_ik_generate_messages_lisp
+
+# fast build rule for target.
+mecanum_ik_generate_messages_lisp/fast:
+	$(MAKE) -f CMakeFiles/mecanum_ik_generate_messages_lisp.dir/build.make CMakeFiles/mecanum_ik_generate_messages_lisp.dir/build
+.PHONY : mecanum_ik_generate_messages_lisp/fast
 
 #=============================================================================
 # Target rules for targets named mecanum_ik_generate_messages_eus
@@ -402,6 +415,19 @@ geometry_msgs_generate_messages_cpp/fast:
 .PHONY : geometry_msgs_generate_messages_cpp/fast
 
 #=============================================================================
+# Target rules for targets named mecanum_ik_node
+
+# Build rule for target.
+mecanum_ik_node: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 mecanum_ik_node
+.PHONY : mecanum_ik_node
+
+# fast build rule for target.
+mecanum_ik_node/fast:
+	$(MAKE) -f CMakeFiles/mecanum_ik_node.dir/build.make CMakeFiles/mecanum_ik_node.dir/build
+.PHONY : mecanum_ik_node/fast
+
+#=============================================================================
 # Target rules for targets named rosgraph_msgs_generate_messages_py
 
 # Build rule for target.
@@ -493,19 +519,6 @@ geometry_msgs_generate_messages_py/fast:
 .PHONY : geometry_msgs_generate_messages_py/fast
 
 #=============================================================================
-# Target rules for targets named roscpp_generate_messages_cpp
-
-# Build rule for target.
-roscpp_generate_messages_cpp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 roscpp_generate_messages_cpp
-.PHONY : roscpp_generate_messages_cpp
-
-# fast build rule for target.
-roscpp_generate_messages_cpp/fast:
-	$(MAKE) -f CMakeFiles/roscpp_generate_messages_cpp.dir/build.make CMakeFiles/roscpp_generate_messages_cpp.dir/build
-.PHONY : roscpp_generate_messages_cpp/fast
-
-#=============================================================================
 # Target rules for targets named geometry_msgs_generate_messages_eus
 
 # Build rule for target.
@@ -558,32 +571,6 @@ roscpp_generate_messages_eus/fast:
 .PHONY : roscpp_generate_messages_eus/fast
 
 #=============================================================================
-# Target rules for targets named mecanum_ik_generate_messages_lisp
-
-# Build rule for target.
-mecanum_ik_generate_messages_lisp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 mecanum_ik_generate_messages_lisp
-.PHONY : mecanum_ik_generate_messages_lisp
-
-# fast build rule for target.
-mecanum_ik_generate_messages_lisp/fast:
-	$(MAKE) -f CMakeFiles/mecanum_ik_generate_messages_lisp.dir/build.make CMakeFiles/mecanum_ik_generate_messages_lisp.dir/build
-.PHONY : mecanum_ik_generate_messages_lisp/fast
-
-#=============================================================================
-# Target rules for targets named _mecanum_ik_generate_messages_check_deps_vector4_msg
-
-# Build rule for target.
-_mecanum_ik_generate_messages_check_deps_vector4_msg: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 _mecanum_ik_generate_messages_check_deps_vector4_msg
-.PHONY : _mecanum_ik_generate_messages_check_deps_vector4_msg
-
-# fast build rule for target.
-_mecanum_ik_generate_messages_check_deps_vector4_msg/fast:
-	$(MAKE) -f CMakeFiles/_mecanum_ik_generate_messages_check_deps_vector4_msg.dir/build.make CMakeFiles/_mecanum_ik_generate_messages_check_deps_vector4_msg.dir/build
-.PHONY : _mecanum_ik_generate_messages_check_deps_vector4_msg/fast
-
-#=============================================================================
 # Target rules for targets named roscpp_generate_messages_py
 
 # Build rule for target.
@@ -595,6 +582,32 @@ roscpp_generate_messages_py: cmake_check_build_system
 roscpp_generate_messages_py/fast:
 	$(MAKE) -f CMakeFiles/roscpp_generate_messages_py.dir/build.make CMakeFiles/roscpp_generate_messages_py.dir/build
 .PHONY : roscpp_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named roscpp_generate_messages_cpp
+
+# Build rule for target.
+roscpp_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 roscpp_generate_messages_cpp
+.PHONY : roscpp_generate_messages_cpp
+
+# fast build rule for target.
+roscpp_generate_messages_cpp/fast:
+	$(MAKE) -f CMakeFiles/roscpp_generate_messages_cpp.dir/build.make CMakeFiles/roscpp_generate_messages_cpp.dir/build
+.PHONY : roscpp_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named _mecanum_ik_generate_messages_check_deps_EmptySrv
+
+# Build rule for target.
+_mecanum_ik_generate_messages_check_deps_EmptySrv: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _mecanum_ik_generate_messages_check_deps_EmptySrv
+.PHONY : _mecanum_ik_generate_messages_check_deps_EmptySrv
+
+# fast build rule for target.
+_mecanum_ik_generate_messages_check_deps_EmptySrv/fast:
+	$(MAKE) -f CMakeFiles/_mecanum_ik_generate_messages_check_deps_EmptySrv.dir/build.make CMakeFiles/_mecanum_ik_generate_messages_check_deps_EmptySrv.dir/build
+.PHONY : _mecanum_ik_generate_messages_check_deps_EmptySrv/fast
 
 #=============================================================================
 # Target rules for targets named rosgraph_msgs_generate_messages_eus
@@ -713,13 +726,40 @@ gtest/fast:
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/build
 .PHONY : gtest/fast
 
+include/mecanum_ik/i2c_reader.o: include/mecanum_ik/i2c_reader.cpp.o
+
+.PHONY : include/mecanum_ik/i2c_reader.o
+
+# target to build an object file
+include/mecanum_ik/i2c_reader.cpp.o:
+	$(MAKE) -f CMakeFiles/i2c_reader.dir/build.make CMakeFiles/i2c_reader.dir/include/mecanum_ik/i2c_reader.cpp.o
+.PHONY : include/mecanum_ik/i2c_reader.cpp.o
+
+include/mecanum_ik/i2c_reader.i: include/mecanum_ik/i2c_reader.cpp.i
+
+.PHONY : include/mecanum_ik/i2c_reader.i
+
+# target to preprocess a source file
+include/mecanum_ik/i2c_reader.cpp.i:
+	$(MAKE) -f CMakeFiles/i2c_reader.dir/build.make CMakeFiles/i2c_reader.dir/include/mecanum_ik/i2c_reader.cpp.i
+.PHONY : include/mecanum_ik/i2c_reader.cpp.i
+
+include/mecanum_ik/i2c_reader.s: include/mecanum_ik/i2c_reader.cpp.s
+
+.PHONY : include/mecanum_ik/i2c_reader.s
+
+# target to generate assembly for a file
+include/mecanum_ik/i2c_reader.cpp.s:
+	$(MAKE) -f CMakeFiles/i2c_reader.dir/build.make CMakeFiles/i2c_reader.dir/include/mecanum_ik/i2c_reader.cpp.s
+.PHONY : include/mecanum_ik/i2c_reader.cpp.s
+
 src/mecanum_ik.o: src/mecanum_ik.cpp.o
 
 .PHONY : src/mecanum_ik.o
 
 # target to build an object file
 src/mecanum_ik.cpp.o:
-	$(MAKE) -f CMakeFiles/mecanum_ik.dir/build.make CMakeFiles/mecanum_ik.dir/src/mecanum_ik.cpp.o
+	$(MAKE) -f CMakeFiles/mecanum_ik_node.dir/build.make CMakeFiles/mecanum_ik_node.dir/src/mecanum_ik.cpp.o
 .PHONY : src/mecanum_ik.cpp.o
 
 src/mecanum_ik.i: src/mecanum_ik.cpp.i
@@ -728,7 +768,7 @@ src/mecanum_ik.i: src/mecanum_ik.cpp.i
 
 # target to preprocess a source file
 src/mecanum_ik.cpp.i:
-	$(MAKE) -f CMakeFiles/mecanum_ik.dir/build.make CMakeFiles/mecanum_ik.dir/src/mecanum_ik.cpp.i
+	$(MAKE) -f CMakeFiles/mecanum_ik_node.dir/build.make CMakeFiles/mecanum_ik_node.dir/src/mecanum_ik.cpp.i
 .PHONY : src/mecanum_ik.cpp.i
 
 src/mecanum_ik.s: src/mecanum_ik.cpp.s
@@ -737,7 +777,7 @@ src/mecanum_ik.s: src/mecanum_ik.cpp.s
 
 # target to generate assembly for a file
 src/mecanum_ik.cpp.s:
-	$(MAKE) -f CMakeFiles/mecanum_ik.dir/build.make CMakeFiles/mecanum_ik.dir/src/mecanum_ik.cpp.s
+	$(MAKE) -f CMakeFiles/mecanum_ik_node.dir/build.make CMakeFiles/mecanum_ik_node.dir/src/mecanum_ik.cpp.s
 .PHONY : src/mecanum_ik.cpp.s
 
 # Help Target
@@ -750,9 +790,10 @@ help:
 	@echo "... install"
 	@echo "... list_install_components"
 	@echo "... edit_cache"
-	@echo "... mecanum_ik"
+	@echo "... i2c_reader"
 	@echo "... mecanum_ik_genpy"
 	@echo "... mecanum_ik_generate_messages_nodejs"
+	@echo "... mecanum_ik_generate_messages_lisp"
 	@echo "... mecanum_ik_generate_messages_eus"
 	@echo "... std_msgs_generate_messages_lisp"
 	@echo "... run_tests"
@@ -769,6 +810,7 @@ help:
 	@echo "... geometry_msgs_generate_messages_nodejs"
 	@echo "... mecanum_ik_genlisp"
 	@echo "... geometry_msgs_generate_messages_cpp"
+	@echo "... mecanum_ik_node"
 	@echo "... rosgraph_msgs_generate_messages_py"
 	@echo "... doxygen"
 	@echo "... mecanum_ik_gennodejs"
@@ -776,15 +818,14 @@ help:
 	@echo "... clean_test_results"
 	@echo "... tests"
 	@echo "... geometry_msgs_generate_messages_py"
-	@echo "... roscpp_generate_messages_cpp"
 	@echo "... geometry_msgs_generate_messages_eus"
 	@echo "... std_msgs_generate_messages_nodejs"
 	@echo "... std_msgs_generate_messages_py"
 	@echo "... rebuild_cache"
 	@echo "... roscpp_generate_messages_eus"
-	@echo "... mecanum_ik_generate_messages_lisp"
-	@echo "... _mecanum_ik_generate_messages_check_deps_vector4_msg"
 	@echo "... roscpp_generate_messages_py"
+	@echo "... roscpp_generate_messages_cpp"
+	@echo "... _mecanum_ik_generate_messages_check_deps_EmptySrv"
 	@echo "... install/local"
 	@echo "... rosgraph_msgs_generate_messages_eus"
 	@echo "... download_extra_data"
@@ -795,6 +836,9 @@ help:
 	@echo "... gmock"
 	@echo "... gtest_main"
 	@echo "... gtest"
+	@echo "... include/mecanum_ik/i2c_reader.o"
+	@echo "... include/mecanum_ik/i2c_reader.i"
+	@echo "... include/mecanum_ik/i2c_reader.s"
 	@echo "... src/mecanum_ik.o"
 	@echo "... src/mecanum_ik.i"
 	@echo "... src/mecanum_ik.s"

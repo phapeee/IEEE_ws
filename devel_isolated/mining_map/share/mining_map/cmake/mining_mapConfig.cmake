@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib;/home/ubuntu/IEEE_ws/devel_isolated/mecanum_odometry/lib;/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/lib;/home/ubuntu/IEEE_ws/devel_isolated/mecanum_description/lib;/home/ubuntu/IEEE_ws/devel_isolated/keyboard_control/lib;/home/ubuntu/IEEE_ws/devel_isolated/keyboard/lib;/home/ubuntu/IEEE_ws/devel_isolated/imu_tf/lib;/home/ubuntu/IEEE_ws/devel_isolated/ieee_master/lib;/home/ubuntu/IEEE_ws/devel_isolated/cv_camera/lib;/home/ubuntu/IEEE_ws/devel_isolated/apriltag_tf/lib;/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/lib;/home/ubuntu/WitStandardProtocol_JY901/ROS/wit/wit_ros_ws/devel/lib;/home/ubuntu/IEEE_ws/devel_isolated/apriltag_ros/lib;/home/ubuntu/IEEE_ws/devel/lib;/home/ubuntu/catkin_ws/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib;/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/lib;/home/ubuntu/IEEE_ws/devel_isolated/keyboard_control/lib;/home/ubuntu/IEEE_ws/devel_isolated/imu_tf/lib;/home/ubuntu/IEEE_ws/devel_isolated/ieee_master/lib;/home/ubuntu/IEEE_ws/devel_isolated/cv_camera/lib;/home/ubuntu/IEEE_ws/devel_isolated/apriltag_tf/lib;/home/ubuntu/IEEE_ws/devel_isolated/apriltag_ros/lib;/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/lib;/home/ubuntu/WitStandardProtocol_JY901/ROS/wit/wit_ros_ws/devel/lib;/home/ubuntu/catkin_ws/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
@@ -185,7 +185,7 @@ foreach(t ${mining_map_EXPORTED_TARGETS})
   endif()
 endforeach()
 
-set(depends "roscpp;geometry_msgs")
+set(depends "roscpp;geometry_msgs;april_tag_detection")
 foreach(depend ${depends})
   string(REPLACE " " ";" depend_list ${depend})
   # the package name of the dependency must be kept in a unique variable so that it is not overwritten in recursive calls

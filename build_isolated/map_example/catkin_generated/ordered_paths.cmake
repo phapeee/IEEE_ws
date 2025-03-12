@@ -1,1 +1,0 @@
-set(ORDERED_PATHS "/home/ubuntu/IEEE_ws/devel_isolated/mining_map/lib;/opt/ros/noetic/lib")

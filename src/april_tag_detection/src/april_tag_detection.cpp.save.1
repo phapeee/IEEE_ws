@@ -1,0 +1,249 @@
+#include <ros/ros.h>
+#include <std_srvs/Empty.h>
+#include <std_msgs/String.h>
+#include <iostream>
+#include <cstring>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <nav_msgs/Odometry.h>
+#include <geometry_msgs/Pose.h>
+#include "april_tag_detection/GetAprilTag.h"
+#include <tf2_ros/static_transform_broadcaster.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <geometry_msgs/TransformStamped.h>
+#include <geometry_msgs/Transform.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Transform.h>
+#include <cstdlib>
+#include <vector>
+
+#define PORT 8080       // Listening port
+#define MAX_RETRIES 5   // Number of retries if data isn't received
+#define TIMEOUT_SEC 1   // Timeout in seconds for receiving data
+
+geometry_msgs::Pose tag_pose;
+double received_data[8];  // Array to store received data
+int client_socket;
+ros::Publisher tag_pub;
+geometry_msgs::TransformStamped tag_transform;
+
+bool tag_calibrated[] = {false, false, false, false, false, false, false, false};
+bool tag_ready[] = {false, false, false, false, false, false, false, false};
+tf2::Quaternion tag_correction[8];
+
+void broadCastPose(const double pose_data[8])
+{
+	static tf2_ros::TransformBroadcaster broadcaster;
+	uint8_t tag_id = received_data[1];
+	if (abs(tag_id) > 7) return;
+
+	tf2::Quaternion q(pose_data[4], pose_data[5], pose_data[6], pose_data[7]);
+
+	if (!tag_calibrated[tag_id]){
+		tag_correction[tag_id] = q.inverse();
+		//ROS_INFO("%.4f,%.4f,%.4f,%.4f", pose_data[4], pose_data[5], pose_data[6], pose_data[7]);
+		tag_calibrated[tag_id] = true;
+	}
+
+	// correction tag
+	q *= tag_correction[tag_id];
+
+    // Assign values to the new Pose
+	tag_transform.header.stamp = ros::Time::now();
+	tag_transform.child_frame_id = "tag_" + std::to_string(tag_id);
+	tag_transform.header.frame_id = "cam_" + std::to_string((uint8_t) received_data[0]);
+
+    tag_transform.transform.translation.x = pose_data[2];
+    tag_transform.transform.translation.y = 0;
+    tag_transform.transform.translation.z = -pose_data[3];
+
+    tag_transform.transform.rotation.x = q.x();
+    tag_transform.transform.rotation.y = q.y();
+    tag_transform.transform.rotation.z = q.z();
+    tag_transform.transform.rotation.w = q.w();
+
+	broadcaster.sendTransform(tag_transform);
+}
+
+// Function to request data from the client
+bool request_data(int client_socket) {
+    int retries = 0;
+
+    while (retries < MAX_RETRIES) {
+        // Request data from client
+        std::string request = "REQ";
+        send(client_socket, request.c_str(), request.size(), 0);
+
+        // Set socket timeout for receiving data
+        struct timeval timeout;
+        timeout.tv_sec = TIMEOUT_SEC;
+        timeout.tv_usec = 0;
+        setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof timeout);
+
+        char check_buffer[4] = {0};
+        int bytes_received = recv(client_socket, check_buffer, sizeof(check_buffer) - 1, MSG_PEEK); // Peek at incoming data
+
+        if (bytes_received > 0) {
+            check_buffer[bytes_received] = '\0'; // Null-terminate for safety
+
+            if (strncmp(check_buffer, "N/A", 3) == 0) {
+                // Consume the "N/A" message
+                recv(client_socket, check_buffer, sizeof(check_buffer) - 1, 0);
+//                std::cout << "Client has no data available (Received: 'N/A')\n";
+                return false;
+            } else {
+                // Receive the actual 8 double values
+                bytes_received = recv(client_socket, received_data, sizeof(double) * 8, 0);
+                if (bytes_received == sizeof(double) * 8) {
+					broadCastPose(received_data);
+					return true;
+                }
+            }
+        }
+
+        //std::cout << "No response from client. Retrying...\n";
+        retries++;
+    }
+
+    //std::cerr << "ERROR: Maximum retries reached. No data received from client.\n";
+    return false;  // Indicate failure
+}
+
+bool getAprilTagPose(april_tag_detection::GetAprilTag::Request &req, 
+                     april_tag_detection::GetAprilTag::Response &res) {
+
+    /*if (){
+    	res.tag_pose = tag_pose;
+    	return true;
+    }*/
+    return false;
+}
+
+int main(int argc, char** argv) {
+    ros::init(argc, argv, "capture_apriltag");
+    ros::NodeHandle nh;
+    ros::Rate rate(20);
+    tag_pub = nh.advertise<geometry_msgs::Pose>("tag_pose", 1);
+    ros::ServiceServer service = nh.advertiseService("get_april_tag", getAprilTagPose);
+
+	// cameras' static position
+	double camPos_x[] = {5.803, -5.803, 0};
+	double camPos_y[] = {1.181, 1.181, 5.803};
+	double camRot_Y[] = {-M_PI_2, M_PI_2, 0};
+
+	// broadcast cameras' static frame
+	static tf2_ros::StaticTransformBroadcaster static_broadcaster;
+	geometry_msgs::TransformStamped transform;
+	transform.header.stamp = ros::Time::now();
+	transform.header.frame_id = "base_link_tag";
+	tf2::Quaternion q;
+
+	for (int i=0; i<3; i++){
+		transform.child_frame_id = "cam_" + std::to_string(i);
+		transform.transform.translation.x = camPos_x[i];
+		transform.transform.translation.y = camPos_y[i];
+		transform.transform.translation.z = 0;
+
+		q.setRPY(-M_PI_2, 0, camRot_Y[i]);
+		transform.transform.rotation.x = q.x();
+		transform.transform.rotation.y = q.y();
+		transform.transform.rotation.z = q.z();
+		transform.transform.rotation.w = q.w();
+
+		static_broadcaster.sendTransform(transform);
+	}
+
+	double tagPos_x[] = {-0.338583, -(30 + 1.96850393), (41.606299 + 1.96850393), -92.921260};
+	double tagPos_z[] = {20.160433 + 2.339567, 44.921260, -0.078740, 20.531496 + 1.968504};
+	double tagRot_Y[] = {M_PI_2, 0, M_PI, -M_PI_2};
+
+	for (int i=0; i<8; i++){
+		transform.header.frame_id = "tag_" + std::to_string(i);
+		transform.child_frame_id = "world_map_" + std::to_string(i);
+		transform.transform.translation.x = tagPos_x[i < 5 ? 0 : i - 4];
+		transform.transform.translation.y = 0;
+		transform.transform.translation.z = tagPos_z[i < 5 ? 0 : i - 4];
+
+		q.setRPY(-M_PI_2, 0, -tagRot_Y[i < 5 ? 0 : i - 4]);
+		transform.transform.rotation.x = q.x();
+		transform.transform.rotation.y = q.y();
+		transform.transform.rotation.z = q.z();
+		transform.transform.rotation.w = q.w();
+
+		static_broadcaster.sendTransform(transform);
+/*
+
+		q.setRPY(M_PI, 0, 0);
+		tag_correction[i] = q;
+		transform.header.frame_id = "world_map";
+		transform.child_frame_id = "world_map_" + std::to_string(i);
+
+		transform.transform.translation.x = 0;
+		transform.transform.translation.y = 0;
+		transform.transform.translation.z = 0;
+
+		transform.transform.rotation.x = 0;
+		transform.transform.rotation.y = 0;
+		transform.transform.rotation.z = 0;
+		transform.transform.rotation.w = 1;
+
+		static_broadcaster.sendTransform(transform);
+*/	}
+
+    int server_fd;
+    struct sockaddr_in address;
+    int addrlen = sizeof(address);
+
+    // Create socket
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+        perror("Socket failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Enable SO_REUSEADDR to reuse the port immediately after restarting
+    int opt = 1;
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        perror("setsockopt failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Bind socket to IP and port
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(PORT);
+
+    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
+        perror("Bind failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Listen for connections
+    if (listen(server_fd, 3) < 0) {
+        perror("Listen failed");
+        exit(EXIT_FAILURE);
+    }
+
+    std::cout << "Server listening on port " << PORT << "...\n";
+
+    // Accept client connection
+    if ((client_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
+	perror("Accept failed");
+	exit(EXIT_FAILURE);
+    }
+
+    std::cout << "Client connected.\n";
+
+	while (ros::ok()){
+		request_data(client_socket);
+		ros::spinOnce;
+		rate.sleep();
+	}
+    //ros::spin();
+
+    // Close sockets
+    close(client_socket);
+    close(server_fd);
+
+    return 0;
+}
