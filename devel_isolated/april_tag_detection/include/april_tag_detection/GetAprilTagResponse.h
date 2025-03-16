@@ -25,18 +25,23 @@ struct GetAprilTagResponse_
   typedef GetAprilTagResponse_<ContainerAllocator> Type;
 
   GetAprilTagResponse_()
-    : tag_id()
+    : tag_count(0)
+    , tag_id()
     , cam_id()
     , poses()  {
     }
   GetAprilTagResponse_(const ContainerAllocator& _alloc)
-    : tag_id(_alloc)
+    : tag_count(0)
+    , tag_id(_alloc)
     , cam_id(_alloc)
     , poses(_alloc)  {
   (void)_alloc;
     }
 
 
+
+   typedef uint8_t _tag_count_type;
+  _tag_count_type tag_count;
 
    typedef std::vector<uint8_t, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<uint8_t>> _tag_id_type;
   _tag_id_type tag_id;
@@ -76,7 +81,8 @@ return s;
 template<typename ContainerAllocator1, typename ContainerAllocator2>
 bool operator==(const ::april_tag_detection::GetAprilTagResponse_<ContainerAllocator1> & lhs, const ::april_tag_detection::GetAprilTagResponse_<ContainerAllocator2> & rhs)
 {
-  return lhs.tag_id == rhs.tag_id &&
+  return lhs.tag_count == rhs.tag_count &&
+    lhs.tag_id == rhs.tag_id &&
     lhs.cam_id == rhs.cam_id &&
     lhs.poses == rhs.poses;
 }
@@ -135,12 +141,12 @@ struct MD5Sum< ::april_tag_detection::GetAprilTagResponse_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "949fa0e89a1c174df8f132bfeb1bf32d";
+    return "a747909d241398506309a0b18c8aa9eb";
   }
 
   static const char* value(const ::april_tag_detection::GetAprilTagResponse_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x949fa0e89a1c174dULL;
-  static const uint64_t static_value2 = 0xf8f132bfeb1bf32dULL;
+  static const uint64_t static_value1 = 0xa747909d24139850ULL;
+  static const uint64_t static_value2 = 0x6309a0b18c8aa9ebULL;
 };
 
 template<class ContainerAllocator>
@@ -159,7 +165,8 @@ struct Definition< ::april_tag_detection::GetAprilTagResponse_<ContainerAllocato
 {
   static const char* value()
   {
-    return "uint8[] tag_id\n"
+    return "uint8 tag_count\n"
+"uint8[] tag_id\n"
 "uint8[] cam_id\n"
 "geometry_msgs/Pose[] poses\n"
 "\n"
@@ -203,6 +210,7 @@ namespace serialization
   {
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
+      stream.next(m.tag_count);
       stream.next(m.tag_id);
       stream.next(m.cam_id);
       stream.next(m.poses);
@@ -224,6 +232,8 @@ struct Printer< ::april_tag_detection::GetAprilTagResponse_<ContainerAllocator> 
 {
   template<typename Stream> static void stream(Stream& s, const std::string& indent, const ::april_tag_detection::GetAprilTagResponse_<ContainerAllocator>& v)
   {
+    s << indent << "tag_count: ";
+    Printer<uint8_t>::stream(s, indent + "  ", v.tag_count);
     s << indent << "tag_id[]" << std::endl;
     for (size_t i = 0; i < v.tag_id.size(); ++i)
     {

@@ -167,21 +167,10 @@ void placeBeacon(bool& started, bool& done, map::checkPointData& cpData){
 }
 
 void resetBeacon(bool& started, bool& done, map::checkPointData& cpData){
-        if(!started && !done){
-				cpData.destination_pose.position.x = cpData.current_pose.position.x + 3;
-				cpData.arrived = false;
-        }
-		else {
-			sendCommand(CMD_RESET_BEACON);
-			done = true;
-		}
-}
-/*
-void resetBeacon(bool& started, bool& done, map::checkPointData& cpData){
         sendCommand(CMD_RESET_BEACON);
 		started = true;
         done = true;
-}*/
+}
 
 void deployGathering(bool& started, bool& done, map::checkPointData& cpData){
         static ros::Time timer;
@@ -539,8 +528,8 @@ int main(int argc, char** argv){
 	unsigned int pad_num = 0;
 
 	// back up and deploy gathering
-//	ieee_map.addCheckPoint(pad_num++, tf::Vector3(31.25 - 5, 6, 0), M_PI_2, deployGathering, map::Map::doNothing);
-//	ieee_map.addCheckPoint(pad_num++, tf::Vector3(31.25 - 5, 9, 0), M_PI_2, deployGathering, map::Map::doNothing);
+	ieee_map.addCheckPoint(pad_num++, tf::Vector3(31.25 - 5, 6, 0), M_PI_2, deployGathering, map::Map::doNothing);
+	ieee_map.addCheckPoint(pad_num++, tf::Vector3(31.25 - 5, 9, 0), M_PI_2, deployGathering, map::Map::doNothing);
 
 	// approaching beacon mask, red
 //	ieee_map.addCheckPoint(pad_num++, tf::Vector3(31.25 - 15, 22.4, 0), M_PI_2, map::Map::doNothing, map::Map::doNothing);
@@ -549,12 +538,12 @@ int main(int argc, char** argv){
 	// find beacon mask
 	ieee_map.addCheckPoint(pad_num++, tf::Vector3(-99, -99, 0), M_PI_2, map::Map::doNothing, findBeaconMask);
 	ieee_map.addCheckPoint(pad_num++, tf::Vector3(-99, -99, 0), M_PI_2, map::Map::doNothing, placeBeacon);
-	ieee_map.addCheckPoint(pad_num++, tf::Vector3(-99, -99, 0), M_PI_2, map::Map::doNothing, resetBeacon);
+	ieee_map.addCheckPoint(pad_num++, tf::Vector3(-99, -99, 0), M_PI_2, map::Map::doNothing, tempResetBeacon);
 //	ieee_map.addCheckPoint(pad_num++, tf::Vector3(8.6, 22.6, 0), M_PI, map::Map::doNothing, map::Map::doNothing);
 
-	// go back and into the cave
-//	ieee_map.addCheckPoint(pad_num++, tf::Vector3(53, 22.5, 0), M_PI_2, gatherSortStart, resetBeacon);
 /*
+	// go back and into the cave
+	ieee_map.addCheckPoint(pad_num++, tf::Vector3(53, 22.5, 0), M_PI_2, gatherSortStart, resetBeacon);
 
 	// back up out of the cave
 	ieee_map.addCheckPoint(pad_num++, tf::Vector3(44, 22.5, 0), M_PI_2, map::Map::doNothing, map::Map::doNothing);
@@ -623,8 +612,9 @@ int main(int argc, char** argv){
 			if((ros::Time::now() - game_time).toSec() > 180){
 				break;
 			}
-			ieee_map.followPath();
 		}
+
+		ieee_map.followPath();
 /*
 		ros::Time now = ros::Time::now();
 

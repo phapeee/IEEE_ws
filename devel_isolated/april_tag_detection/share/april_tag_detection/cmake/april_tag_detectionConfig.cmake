@@ -91,9 +91,9 @@ endif()
 # flag project as catkin-based to distinguish if a find_package()-ed project is a catkin project
 set(april_tag_detection_FOUND_CATKIN_PROJECT TRUE)
 
-if(NOT "/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/include;/home/ubuntu/IEEE_ws/src/april_tag_detection/include " STREQUAL " ")
+if(NOT "/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/include " STREQUAL " ")
   set(april_tag_detection_INCLUDE_DIRS "")
-  set(_include_dirs "/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/include;/home/ubuntu/IEEE_ws/src/april_tag_detection/include")
+  set(_include_dirs "/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/include")
   if(NOT " " STREQUAL " ")
     set(_report "Check the issue tracker '' and consider creating a ticket if the problem has not been reported yet.")
   elseif(NOT " " STREQUAL " ")

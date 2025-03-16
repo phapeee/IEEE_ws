@@ -6,5 +6,5 @@ CXX_FLAGS = -fPIC
 
 CXX_DEFINES = -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\"april_tag_detection\" -Dapril_tag_detection_EXPORTS
 
-CXX_INCLUDES = -I/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/include -I/home/ubuntu/IEEE_ws/src/april_tag_detection/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/april_tag_detection 
+CXX_INCLUDES = -I/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/include -I/home/ubuntu/IEEE_ws/src/april_tag_detection/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp 
 

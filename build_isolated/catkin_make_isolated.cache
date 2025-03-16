@@ -1,2 +1,2 @@
-april_tag_detection:apriltag:apriltag_ros/apriltag_ros:apriltag_tf:cv_camera:ieee_master:imu_tf:keyboard_control:mecanum_ik:mining_map:ore_detection:tof_sensors
+april_tag_detection:cv_camera:ieee_master:imu_tf:keyboard_control:mecanum_ik:mining_map:ore_detection:tof_sensors
 -G Unix Makefiles -DCATKIN_DEVEL_PREFIX=/home/ubuntu/IEEE_ws/devel_isolated -DCMAKE_INSTALL_PREFIX=/home/ubuntu/IEEE_ws/install_isolated

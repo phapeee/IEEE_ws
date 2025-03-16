@@ -415,13 +415,13 @@ namespace map{
 		path_arrow.id = 100;
 		for (int i=0; i < path.size(); i++){
 			geometry_msgs::Point p;
-			p.x = path[i].destination.position.x;
-			p.y = path[i].destination.position.y;
-			p.z = path[i].destination.position.z;
+			p.x = path[i].cpData.destination_pose.position.x;
+			p.y = path[i].cpData.destination_pose.position.y;
+			p.z = path[i].cpData.destination_pose.position.z;
 			path_line.points.push_back(p);
 
 			path_arrow.id++;
-			path_arrow.pose = path[i].destination;
+			path_arrow.pose = path[i].cpData.destination_pose;
 			path_marker.markers.push_back(path_arrow);
 		}
 		path_marker.markers.push_back(path_line);
@@ -504,11 +504,11 @@ namespace map{
 			setRunPath(false);
 			return;
 		}
+		path[current_checkpoint].cpData.current_pose = Bot->pose;
+		if (!path[current_checkpoint].cpData.arrived) path[current_checkpoint].cpData.arrived = moveBot(path[current_checkpoint].cpData.destination_pose);
+		else path[current_checkpoint].destination_action(path[current_checkpoint].destination_action_started, path[current_checkpoint].destination_action_done, path[current_checkpoint].cpData);
 
-		if (!path[current_checkpoint].arrived) path[current_checkpoint].arrived = moveBot(path[current_checkpoint].destination);
-		else path[current_checkpoint].destination_action(path[current_checkpoint].destination_action_started, path[current_checkpoint].destination_action_done);
-
-		path[current_checkpoint].action(path[current_checkpoint].action_started, path[current_checkpoint].action_done);
+		path[current_checkpoint].action(path[current_checkpoint].action_started, path[current_checkpoint].action_done, path[current_checkpoint].cpData);
 		if (path[current_checkpoint].action_done && path[current_checkpoint].destination_action_done) {
 			current_checkpoint++;
 		}
@@ -523,11 +523,13 @@ namespace map{
 		velocity.z = 0.0;
 
 		tf::Vector3 distance_error(dest.position.x - Bot->pose.position.x, dest.position.y - Bot->pose.position.y, 0);
-		if (dest.position.x < 0) distance_error.setX(0);
-		if (dest.position.y < 0) distance_error.setY(0);
+		if (dest.position.x < -50) distance_error.setX(0);
+		if (dest.position.y < -50) distance_error.setY(0);
 		double bot_angle = tf::getYaw(Bot->pose.orientation);
 		double angle_error = tf::getYaw(dest.orientation) - bot_angle;
 		angle_error = atan2(sin(angle_error), cos(angle_error));
+
+//		ROS_INFO("dis err x: %.2f, dis err y: %.2f, ang err: %.2f", distance_error.x(), distance_error.y(), angle_error);
 
 		if (distance_error.length2() > STOP_RADIUS) {
 			distance_error *= LINEAR_K;
@@ -577,18 +579,20 @@ namespace map{
 	void Map::addCheckPoint(unsigned int index, tf::Vector3 position, double orientation, Action action, Action dest_action){
 		CheckPoint cp;
 
-		cp.destination.position.x = position.x();
-		cp.destination.position.y = position.y();
-		cp.destination.position.z = 0;
+		cp.cpData.destination_pose.position.x = position.x();
+		cp.cpData.destination_pose.position.y = position.y();
+		cp.cpData.destination_pose.position.z = 0;
 
 		tfScalar angle = std::min(M_PI, std::max(-M_PI, orientation));
 		tf::Vector3 axis(0.0, 0.0, 1.0);
 		tf::Quaternion orien(axis, angle);
 
-		cp.destination.orientation.x = orien.x();
-		cp.destination.orientation.y = orien.y();
-		cp.destination.orientation.z = orien.z();
-		cp.destination.orientation.w = orien.w();
+		cp.cpData.desired_angle = orientation;
+
+		cp.cpData.destination_pose.orientation.x = orien.x();
+		cp.cpData.destination_pose.orientation.y = orien.y();
+		cp.cpData.destination_pose.orientation.z = orien.z();
+		cp.cpData.destination_pose.orientation.w = orien.w();
 
 		cp.action = action;
 		cp.destination_action = dest_action;
@@ -601,7 +605,7 @@ namespace map{
 		int_marker.header.frame_id = "world_map";
 		tf::pointTFToMsg(position, int_marker.pose.position);
 		int_marker.scale = 2;
-		int_marker.pose.orientation = cp.destination.orientation;
+		int_marker.pose.orientation = cp.cpData.destination_pose.orientation;
 		int_marker.name = "cp_";
 		int_marker.name += std::to_string(index);
 		int_marker.description = "check point ";
@@ -648,7 +652,7 @@ namespace map{
 		auto controllerCallback = [this](const visualization_msgs::InteractiveMarkerFeedbackConstPtr& fb){
 			auto pos = fb->marker_name.find('_');
 			unsigned int index = std::stoi(fb->marker_name.substr(pos + 1, fb->marker_name.length() - pos));
-			path[index].destination = fb->pose;
+			path[index].cpData.destination_pose = fb->pose;
 			updatePathMarker();
 		};
 
@@ -681,7 +685,7 @@ namespace map{
 			Map::server->applyChanges();
 		}
 	}
-	void Map::doNothing(bool& started, bool& done) {
+	void Map::doNothing(bool& started, bool& done, checkPointData& cpData) {
         	started = true;
         	done = true;
 	}
@@ -741,7 +745,7 @@ namespace map{
 			p.destination_action_done = false;
 			p.action_started = false;
 			p.destination_action_started = false;
-			p.arrived = false;
+			p.cpData.arrived = false;
 		}
 		bot_vel.x = 0.0;
 		bot_vel.y = 0.0;

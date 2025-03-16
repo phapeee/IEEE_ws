@@ -8,5 +8,8 @@
 
 # modified environment variables
 export CMAKE_PREFIX_PATH="/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik:$CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH="/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/lib:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PYTHONPATH="/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/lib/python3/dist-packages:$PYTHONPATH"
 export ROSLISP_PACKAGE_DIRECTORIES="/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
 export ROS_PACKAGE_PATH="/home/ubuntu/IEEE_ws/src/mecanum_ik:$ROS_PACKAGE_PATH"

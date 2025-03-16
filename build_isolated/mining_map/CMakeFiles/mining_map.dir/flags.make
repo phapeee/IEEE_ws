@@ -6,5 +6,5 @@ CXX_FLAGS = -fPIC
 
 CXX_DEFINES = -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\"mining_map\" -Dmining_map_EXPORTS
 
-CXX_INCLUDES = -I/home/ubuntu/IEEE_ws/src/mining_map/include -I/home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/include -I/home/ubuntu/IEEE_ws/src/mecanum_ik/include -I/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/include -I/home/ubuntu/IEEE_ws/src/april_tag_detection/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp 
+CXX_INCLUDES = -I/home/ubuntu/IEEE_ws/src/mining_map/include -I/home/ubuntu/IEEE_ws/src/mecanum_ik/include -I/home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp 
 

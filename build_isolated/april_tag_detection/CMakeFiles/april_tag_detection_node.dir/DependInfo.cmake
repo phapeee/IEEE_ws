@@ -21,7 +21,6 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/home/ubuntu/IEEE_ws/src/april_tag_detection/include"
   "/opt/ros/noetic/include"
   "/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
-  "/usr/include/april_tag_detection"
   )
 
 # Targets to which this target links.

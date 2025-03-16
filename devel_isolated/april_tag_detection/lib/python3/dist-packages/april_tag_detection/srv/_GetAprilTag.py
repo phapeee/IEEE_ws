@@ -170,10 +170,11 @@ import struct
 import geometry_msgs.msg
 
 class GetAprilTagResponse(genpy.Message):
-  _md5sum = "949fa0e89a1c174df8f132bfeb1bf32d"
+  _md5sum = "a747909d241398506309a0b18c8aa9eb"
   _type = "april_tag_detection/GetAprilTagResponse"
   _has_header = False  # flag to mark the presence of a Header object
-  _full_text = """uint8[] tag_id
+  _full_text = """uint8 tag_count
+uint8[] tag_id
 uint8[] cam_id
 geometry_msgs/Pose[] poses
 
@@ -200,8 +201,8 @@ float64 y
 float64 z
 float64 w
 """
-  __slots__ = ['tag_id','cam_id','poses']
-  _slot_types = ['uint8[]','uint8[]','geometry_msgs/Pose[]']
+  __slots__ = ['tag_count','tag_id','cam_id','poses']
+  _slot_types = ['uint8','uint8[]','uint8[]','geometry_msgs/Pose[]']
 
   def __init__(self, *args, **kwds):
     """
@@ -211,7 +212,7 @@ float64 w
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       tag_id,cam_id,poses
+       tag_count,tag_id,cam_id,poses
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -220,6 +221,8 @@ float64 w
     if args or kwds:
       super(GetAprilTagResponse, self).__init__(*args, **kwds)
       # message fields cannot be None, assign default values for those that are
+      if self.tag_count is None:
+        self.tag_count = 0
       if self.tag_id is None:
         self.tag_id = b''
       if self.cam_id is None:
@@ -227,6 +230,7 @@ float64 w
       if self.poses is None:
         self.poses = []
     else:
+      self.tag_count = 0
       self.tag_id = b''
       self.cam_id = b''
       self.poses = []
@@ -243,6 +247,8 @@ float64 w
     :param buff: buffer, ``StringIO``
     """
     try:
+      _x = self.tag_count
+      buff.write(_get_struct_B().pack(_x))
       _x = self.tag_id
       length = len(_x)
       # - if encoded as a list instead, serialize as bytes instead of string
@@ -280,6 +286,9 @@ float64 w
       if self.poses is None:
         self.poses = None
       end = 0
+      start = end
+      end += 1
+      (self.tag_count,) = _get_struct_B().unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -321,6 +330,8 @@ float64 w
     :param numpy: numpy python module
     """
     try:
+      _x = self.tag_count
+      buff.write(_get_struct_B().pack(_x))
       _x = self.tag_id
       length = len(_x)
       # - if encoded as a list instead, serialize as bytes instead of string
@@ -359,6 +370,9 @@ float64 w
       if self.poses is None:
         self.poses = None
       end = 0
+      start = end
+      end += 1
+      (self.tag_count,) = _get_struct_B().unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -408,8 +422,14 @@ def _get_struct_4d():
     if _struct_4d is None:
         _struct_4d = struct.Struct("<4d")
     return _struct_4d
+_struct_B = None
+def _get_struct_B():
+    global _struct_B
+    if _struct_B is None:
+        _struct_B = struct.Struct("<B")
+    return _struct_B
 class GetAprilTag(object):
   _type          = 'april_tag_detection/GetAprilTag'
-  _md5sum = '8da4d9ec9691782775e0aa5067c83359'
+  _md5sum = '11adae4fdc00ea7e90b1c993476c8886'
   _request_class  = GetAprilTagRequest
   _response_class = GetAprilTagResponse

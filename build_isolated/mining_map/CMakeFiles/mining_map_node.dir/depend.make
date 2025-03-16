@@ -4,9 +4,6 @@
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/include/april_tag_detection/GetAprilTag.h
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/include/april_tag_detection/GetAprilTagRequest.h
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /home/ubuntu/IEEE_ws/devel_isolated/april_tag_detection/include/april_tag_detection/GetAprilTagResponse.h
-CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/include/mecanum_ik/EmptySrv.h
-CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/include/mecanum_ik/EmptySrvRequest.h
-CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /home/ubuntu/IEEE_ws/devel_isolated/mecanum_ik/include/mecanum_ik/EmptySrvResponse.h
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /home/ubuntu/IEEE_ws/src/mining_map/include/mining_map/Map.h
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /home/ubuntu/IEEE_ws/src/mining_map/src/mining_map/map_control.cpp
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /opt/ros/noetic/include/geometry_msgs/Point.h
@@ -93,6 +90,9 @@ CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /opt/ros/noetic
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /opt/ros/noetic/include/std_msgs/Empty.h
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /opt/ros/noetic/include/std_msgs/Header.h
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /opt/ros/noetic/include/std_msgs/UInt16.h
+CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /opt/ros/noetic/include/std_srvs/Empty.h
+CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /opt/ros/noetic/include/std_srvs/EmptyRequest.h
+CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /opt/ros/noetic/include/std_srvs/EmptyResponse.h
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /opt/ros/noetic/include/tf/FrameGraph.h
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /opt/ros/noetic/include/tf/FrameGraphRequest.h
 CMakeFiles/mining_map_node.dir/src/mining_map/map_control.cpp.o: /opt/ros/noetic/include/tf/FrameGraphResponse.h

@@ -79,10 +79,10 @@
   "april_tag_detection/GetAprilTagRequest")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<GetAprilTag-request>)))
   "Returns md5sum for a message object of type '<GetAprilTag-request>"
-  "8da4d9ec9691782775e0aa5067c83359")
+  "11adae4fdc00ea7e90b1c993476c8886")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'GetAprilTag-request)))
   "Returns md5sum for a message object of type 'GetAprilTag-request"
-  "8da4d9ec9691782775e0aa5067c83359")
+  "11adae4fdc00ea7e90b1c993476c8886")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<GetAprilTag-request>)))
   "Returns full string definition for message of type '<GetAprilTag-request>"
   (cl:format cl:nil "string tag_id~%string cam_id~%~%~%"))
@@ -103,7 +103,12 @@
 ;//! \htmlinclude GetAprilTag-response.msg.html
 
 (cl:defclass <GetAprilTag-response> (roslisp-msg-protocol:ros-message)
-  ((tag_id
+  ((tag_count
+    :reader tag_count
+    :initarg :tag_count
+    :type cl:fixnum
+    :initform 0)
+   (tag_id
     :reader tag_id
     :initarg :tag_id
     :type (cl:vector cl:fixnum)
@@ -128,6 +133,11 @@
   (cl:unless (cl:typep m 'GetAprilTag-response)
     (roslisp-msg-protocol:msg-deprecation-warning "using old message class name april_tag_detection-srv:<GetAprilTag-response> is deprecated: use april_tag_detection-srv:GetAprilTag-response instead.")))
 
+(cl:ensure-generic-function 'tag_count-val :lambda-list '(m))
+(cl:defmethod tag_count-val ((m <GetAprilTag-response>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader april_tag_detection-srv:tag_count-val is deprecated.  Use april_tag_detection-srv:tag_count instead.")
+  (tag_count m))
+
 (cl:ensure-generic-function 'tag_id-val :lambda-list '(m))
 (cl:defmethod tag_id-val ((m <GetAprilTag-response>))
   (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader april_tag_detection-srv:tag_id-val is deprecated.  Use april_tag_detection-srv:tag_id instead.")
@@ -144,6 +154,7 @@
   (poses m))
 (cl:defmethod roslisp-msg-protocol:serialize ((msg <GetAprilTag-response>) ostream)
   "Serializes a message object of type '<GetAprilTag-response>"
+  (cl:write-byte (cl:ldb (cl:byte 8 0) (cl:slot-value msg 'tag_count)) ostream)
   (cl:let ((__ros_arr_len (cl:length (cl:slot-value msg 'tag_id))))
     (cl:write-byte (cl:ldb (cl:byte 8 0) __ros_arr_len) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 8) __ros_arr_len) ostream)
@@ -168,6 +179,7 @@
 )
 (cl:defmethod roslisp-msg-protocol:deserialize ((msg <GetAprilTag-response>) istream)
   "Deserializes a message object of type '<GetAprilTag-response>"
+    (cl:setf (cl:ldb (cl:byte 8 0) (cl:slot-value msg 'tag_count)) (cl:read-byte istream))
   (cl:let ((__ros_arr_len 0))
     (cl:setf (cl:ldb (cl:byte 8 0) __ros_arr_len) (cl:read-byte istream))
     (cl:setf (cl:ldb (cl:byte 8 8) __ros_arr_len) (cl:read-byte istream))
@@ -206,18 +218,19 @@
   "april_tag_detection/GetAprilTagResponse")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<GetAprilTag-response>)))
   "Returns md5sum for a message object of type '<GetAprilTag-response>"
-  "8da4d9ec9691782775e0aa5067c83359")
+  "11adae4fdc00ea7e90b1c993476c8886")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'GetAprilTag-response)))
   "Returns md5sum for a message object of type 'GetAprilTag-response"
-  "8da4d9ec9691782775e0aa5067c83359")
+  "11adae4fdc00ea7e90b1c993476c8886")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<GetAprilTag-response>)))
   "Returns full string definition for message of type '<GetAprilTag-response>"
-  (cl:format cl:nil "uint8[] tag_id~%uint8[] cam_id~%geometry_msgs/Pose[] poses~%~%~%================================================================================~%MSG: geometry_msgs/Pose~%# A representation of pose in free space, composed of position and orientation. ~%Point position~%Quaternion orientation~%~%================================================================================~%MSG: geometry_msgs/Point~%# This contains the position of a point in free space~%float64 x~%float64 y~%float64 z~%~%================================================================================~%MSG: geometry_msgs/Quaternion~%# This represents an orientation in free space in quaternion form.~%~%float64 x~%float64 y~%float64 z~%float64 w~%~%~%"))
+  (cl:format cl:nil "uint8 tag_count~%uint8[] tag_id~%uint8[] cam_id~%geometry_msgs/Pose[] poses~%~%~%================================================================================~%MSG: geometry_msgs/Pose~%# A representation of pose in free space, composed of position and orientation. ~%Point position~%Quaternion orientation~%~%================================================================================~%MSG: geometry_msgs/Point~%# This contains the position of a point in free space~%float64 x~%float64 y~%float64 z~%~%================================================================================~%MSG: geometry_msgs/Quaternion~%# This represents an orientation in free space in quaternion form.~%~%float64 x~%float64 y~%float64 z~%float64 w~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'GetAprilTag-response)))
   "Returns full string definition for message of type 'GetAprilTag-response"
-  (cl:format cl:nil "uint8[] tag_id~%uint8[] cam_id~%geometry_msgs/Pose[] poses~%~%~%================================================================================~%MSG: geometry_msgs/Pose~%# A representation of pose in free space, composed of position and orientation. ~%Point position~%Quaternion orientation~%~%================================================================================~%MSG: geometry_msgs/Point~%# This contains the position of a point in free space~%float64 x~%float64 y~%float64 z~%~%================================================================================~%MSG: geometry_msgs/Quaternion~%# This represents an orientation in free space in quaternion form.~%~%float64 x~%float64 y~%float64 z~%float64 w~%~%~%"))
+  (cl:format cl:nil "uint8 tag_count~%uint8[] tag_id~%uint8[] cam_id~%geometry_msgs/Pose[] poses~%~%~%================================================================================~%MSG: geometry_msgs/Pose~%# A representation of pose in free space, composed of position and orientation. ~%Point position~%Quaternion orientation~%~%================================================================================~%MSG: geometry_msgs/Point~%# This contains the position of a point in free space~%float64 x~%float64 y~%float64 z~%~%================================================================================~%MSG: geometry_msgs/Quaternion~%# This represents an orientation in free space in quaternion form.~%~%float64 x~%float64 y~%float64 z~%float64 w~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <GetAprilTag-response>))
   (cl:+ 0
+     1
      4 (cl:reduce #'cl:+ (cl:slot-value msg 'tag_id) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 1)))
      4 (cl:reduce #'cl:+ (cl:slot-value msg 'cam_id) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 1)))
      4 (cl:reduce #'cl:+ (cl:slot-value msg 'poses) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ (roslisp-msg-protocol:serialization-length ele))))
@@ -225,6 +238,7 @@
 (cl:defmethod roslisp-msg-protocol:ros-message-to-list ((msg <GetAprilTag-response>))
   "Converts a ROS message object to a list"
   (cl:list 'GetAprilTag-response
+    (cl:cons ':tag_count (tag_count msg))
     (cl:cons ':tag_id (tag_id msg))
     (cl:cons ':cam_id (cam_id msg))
     (cl:cons ':poses (poses msg))

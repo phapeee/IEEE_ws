@@ -3,6 +3,8 @@
           TAG_ID
           CAM_ID-VAL
           CAM_ID
+          TAG_COUNT-VAL
+          TAG_COUNT
           TAG_ID-VAL
           TAG_ID
           CAM_ID-VAL

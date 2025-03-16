@@ -40,8 +40,8 @@ geometry_msgs::TransformStamped tag_transform;
 bool tag_calibrated[] = {false, false, false, false, false, false, false, false};
 bool tag_ready[] = {false, false, false, false, false, false, false, false};
 bool isAlign = false;
-bool detecting_tag;
-bool service_sending;
+bool detecting_tag = false;
+bool service_sending = false;
 tf2::Quaternion tag_correction[8];
 
 double yaw_angle;
@@ -99,7 +99,9 @@ void broadCastPose(const double pose_data[8])
 	tag.pose.orientation.w = q.w();
 	tag_poses.push_back(tag);
 
-	if (tag_id > 4){ // for beacon placer test only. Remove this line after test
+	if (angle_set && (std::abs(yaw_angle) < ANGLE_THRESHOLD ||  // Check for 0
+    	std::abs(std::abs(yaw_angle) - M_PI_2) < ANGLE_THRESHOLD ||  // Check for π/2 (90°)
+		std::abs(std::abs(yaw_angle) - M_PI) < ANGLE_THRESHOLD)){
 		broadcaster.sendTransform(tag_transform);
 		tag_ready[tag_id] = true;
 	}
@@ -107,65 +109,6 @@ void broadCastPose(const double pose_data[8])
 
 // Function to request data from the client
 bool request_data(int client_socket) {
-
-/*    int retries = 0;
-	fd_set read_fds;
-    std::string request = "REQ";
-    struct timeval timeout;
-
-//    while (retries < MAX_RETRIES) {
-	    // Request data from client
-	    FD_ZERO(&read_fds);
-	    FD_SET(client_socket, &read_fds);
-	    send(client_socket, request.c_str(), request.size(), 0);
-
-        // Set socket timeout for receiving data
-        timeout.tv_sec = TIMEOUT_SEC;
-        timeout.tv_usec = 0;
-        //setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof timeout);
-		int activity = select(client_socket + 1, &read_fds, NULL, NULL, &timeout);
-
-		if (activity == -1) {
-            perror("Select error");
-            return false;
-        } else if (activity == 0) {
-            std::cout << "No tags received!" << std::endl;
-            return false;
-        } else {
-            // Data available, receive it
-	        char check_buffer[4] = {0};
-	        int bytes_received = recv(client_socket, check_buffer, sizeof(check_buffer) - 1, MSG_PEEK); // Peek at incoming data
-            if (bytes_received <= 0) {
-                std::cout << "Raspberry Pi 5 disconnected or error occurred." << std::endl;
-                return false;
-            }
-
-            check_buffer[bytes_received] = '\0'; // Null-terminate for safety
-
-            if (strncmp(check_buffer, "N/A", 3) == 0) {
-                // Consume the "N/A" message
-                recv(client_socket, check_buffer, sizeof(check_buffer) - 1, 0);
-                return false;
-            }
-			// received tag's data
-			else {
-                bytes_received = recv(client_socket, received_data, sizeof(double) * 8, 0);
-                if (bytes_received == sizeof(double) * 8) {
-					broadCastPose(received_data);
-					ROS_INFO("CAM: %d, ID: %d",(uint8_t) received_data[0],(uint8_t) received_data[1]);
-                }
-            }
-
-            // END receiveing tags
-            if (strstr(received_data, "END") != nullptr) {
-                return true;
-            }
-        }
-
-
-    //    retries++;
-  //  }
-*/
 	tag_poses.clear();
 	std::string request = "REQ";
 	send(client_socket, request.c_str(), request.size(), 0);
@@ -202,7 +145,6 @@ bool request_data(int client_socket) {
 
         // Check if "END" is received
         if (std::string(buffer).find("END") != std::string::npos) {
-            std::cout << "END detected. Stopping reception." << std::endl;
             return true;
         }
 
@@ -235,16 +177,20 @@ bool getAprilTagPose(april_tag_detection::GetAprilTag::Request &req,
 	std::vector<tag_data> tag_to_send;
 	int req_tag_id = -1;
 	int req_cam_id = -1;
+	int tag_count = 0;
 	if (req.tag_id != "*") req_tag_id = std::stoi(req.tag_id);
 	if (req.cam_id != "*") req_cam_id = std::stoi(req.cam_id);
+	//ROS_INFO("tag_id: %d, cam_id: %d", req_tag_id, req_cam_id);
 	for (int i=0; i<tag_size; i++){
 		if (req_tag_id != -1 && req_tag_id != tag_poses[i].tag_id) continue;
-		if (req_cam_id != -1 && req_cam_id != tag_poses[i].tag_id) continue;
+		if (req_cam_id != -1 && req_cam_id != tag_poses[i].cam_id) continue;
 		tag_to_send.push_back(tag_poses[i]);
+		tag_count++;
 	}
 
 	unsigned int tag_size_to_send = tag_to_send.size();
 
+	res.tag_count = tag_count;
 	res.tag_id.resize(tag_size_to_send);
 	res.cam_id.resize(tag_size_to_send);
 	res.poses.resize(tag_size_to_send);
@@ -253,6 +199,7 @@ bool getAprilTagPose(april_tag_detection::GetAprilTag::Request &req,
 		res.tag_id[i] = tag_to_send[i].tag_id;
 		res.cam_id[i] = tag_to_send[i].cam_id;
 		res.poses[i] = tag_to_send[i].pose;
+		//ROS_INFO("Sending: tag_id=%d, cam_id=%d", res.tag_id[i], res.cam_id[i]);
 	}
 
 	service_sending = false;
@@ -410,37 +357,33 @@ int main(int argc, char** argv) {
 	int tag_count;
 
 	while (ros::ok()){
-		while(!service_sending){}
+		while(service_sending){}
 		detecting_tag = true;
 		request_data(client_socket);
 		detecting_tag = false;
 		tag_count = 0;
 		pose_est.pose.pose.position.x = 0;
 		pose_est.pose.pose.position.y = 0;
-		if (angle_set && (std::abs(yaw_angle) < ANGLE_THRESHOLD ||  // Check for 0
-	    	std::abs(std::abs(yaw_angle) - M_PI_2) < ANGLE_THRESHOLD ||  // Check for π/2 (90°)
-    		std::abs(std::abs(yaw_angle) - M_PI) < ANGLE_THRESHOLD)){
-			for (int i=0; i<8; i++){
-				if (!tag_ready[i]) continue;
-				tag_count++;
-				geometry_msgs::TransformStamped transformStamped;
-				tag_ready[i] = false;
-				std::string world_name = "world_map_" + std::to_string(i);
-				try{
-					transformStamped = tfBuffer.lookupTransform(world_name, "base_link_tag", ros::Time(0));
-				}
-				catch (tf2::TransformException &ex){
-					ROS_WARN("Could NOT transform base_link_tag to %s: %s", world_name.c_str(), ex.what());
-				}
-				//ROS_INFO("x: %.2f, y: %.2f", transformStamped.transform.translation.x, transformStamped.transform.translation.y);
-				pose_est.pose.pose.position.x += transformStamped.transform.translation.x;
-				pose_est.pose.pose.position.y += transformStamped.transform.translation.y;
+		for (int i=0; i<8; i++){
+			if (!tag_ready[i]) continue;
+			tag_count++;
+			geometry_msgs::TransformStamped transformStamped;
+			tag_ready[i] = false;
+			std::string world_name = "world_map_" + std::to_string(i);
+			try{
+				transformStamped = tfBuffer.lookupTransform(world_name, "base_link_tag", ros::Time(0));
 			}
-			pose_est.pose.pose.position.x /= tag_count;
-			pose_est.pose.pose.position.y /= tag_count;
-			pose_est.header.stamp = ros::Time::now();
-			tag_pose_pub.publish(pose_est);
+			catch (tf2::TransformException &ex){
+				ROS_WARN("Could NOT transform base_link_tag to %s: %s", world_name.c_str(), ex.what());
+			}
+			//ROS_INFO("x: %.2f, y: %.2f", transformStamped.transform.translation.x, transformStamped.transform.translation.y);
+			pose_est.pose.pose.position.x += transformStamped.transform.translation.x;
+			pose_est.pose.pose.position.y += transformStamped.transform.translation.y;
 		}
+		pose_est.pose.pose.position.x /= tag_count;
+		pose_est.pose.pose.position.y /= tag_count;
+		pose_est.header.stamp = ros::Time::now();
+		tag_pose_pub.publish(pose_est);
 		rate.sleep();
 	}
 

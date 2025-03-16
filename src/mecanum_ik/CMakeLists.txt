@@ -8,20 +8,6 @@ add_compile_options(-std=c++14)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roscpp
-  message_generation
-)
-
-## Add message files
-add_service_files(
-  FILES
-  EmptySrv.srv
-)
-
-
-generate_messages(
-  DEPENDENCIES
-  geometry_msgs
-  std_msgs
 )
 
 
@@ -29,7 +15,7 @@ generate_messages(
 catkin_package(
    INCLUDE_DIRS include
    LIBRARIES mecanum_ik i2c_reader
-   CATKIN_DEPENDS message_runtime geometry_msgs roscpp
+   CATKIN_DEPENDS geometry_msgs roscpp
 )
 
 ## Specify additional locations of header files

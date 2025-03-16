@@ -10,10 +10,10 @@
 
 #define WHEEL_RADIUS	(2.95275591 / 2)
 #define VD_HD		(8.7)
-#define MOTOR_1_ADD	(0x11)
-#define MOTOR_2_ADD	(0x12)
-#define MOTOR_3_ADD	(0x13)
-#define MOTOR_4_ADD	(0x14)
+#define MOTOR_1_ADD	(0x10)
+#define MOTOR_2_ADD	(0x11)
+#define MOTOR_3_ADD	(0x12)
+#define MOTOR_4_ADD	(0x13)
 #define SAMPLING_PERIOD	(0.010) // second
 #define COEFF_R		(WHEEL_RADIUS/4)
 #define COEFF_M		(1/VD_HD)
@@ -61,7 +61,7 @@ void resetWheel(){
 // return value is a 4D vector in which x is top left, y is top right, z is bottom right, w is bottom left
 void inverse_kinematic_callback(const geometry_msgs::Vector3::ConstPtr &bot_vel)
 {
-	double div_x = bot_vel->x * COEFF;
+	double div_x = bot_vel->x * ;
 	double div_y = bot_vel->y * COEFF;
 	double mul_z = VD_HD * bot_vel->z * COEFF;
 

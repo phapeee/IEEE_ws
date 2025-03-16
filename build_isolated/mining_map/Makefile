@@ -89,17 +89,16 @@ rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
 
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
+# Special rule for the target test
+test/fast: test
+
+.PHONY : test/fast
 
 # Special rule for the target install
 install: preinstall
@@ -113,6 +112,18 @@ install/fast: preinstall/fast
 	/usr/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
 
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -123,17 +134,6 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
-
-# Special rule for the target test
-test:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
-	/usr/bin/ctest --force-new-ctest-process $(ARGS)
-.PHONY : test
-
-# Special rule for the target test
-test/fast: test
-
-.PHONY : test/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -205,45 +205,6 @@ april_tag_detection_generate_messages_py: cmake_check_build_system
 april_tag_detection_generate_messages_py/fast:
 	$(MAKE) -f CMakeFiles/april_tag_detection_generate_messages_py.dir/build.make CMakeFiles/april_tag_detection_generate_messages_py.dir/build
 .PHONY : april_tag_detection_generate_messages_py/fast
-
-#=============================================================================
-# Target rules for targets named april_tag_detection_generate_messages_eus
-
-# Build rule for target.
-april_tag_detection_generate_messages_eus: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 april_tag_detection_generate_messages_eus
-.PHONY : april_tag_detection_generate_messages_eus
-
-# fast build rule for target.
-april_tag_detection_generate_messages_eus/fast:
-	$(MAKE) -f CMakeFiles/april_tag_detection_generate_messages_eus.dir/build.make CMakeFiles/april_tag_detection_generate_messages_eus.dir/build
-.PHONY : april_tag_detection_generate_messages_eus/fast
-
-#=============================================================================
-# Target rules for targets named april_tag_detection_generate_messages_cpp
-
-# Build rule for target.
-april_tag_detection_generate_messages_cpp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 april_tag_detection_generate_messages_cpp
-.PHONY : april_tag_detection_generate_messages_cpp
-
-# fast build rule for target.
-april_tag_detection_generate_messages_cpp/fast:
-	$(MAKE) -f CMakeFiles/april_tag_detection_generate_messages_cpp.dir/build.make CMakeFiles/april_tag_detection_generate_messages_cpp.dir/build
-.PHONY : april_tag_detection_generate_messages_cpp/fast
-
-#=============================================================================
-# Target rules for targets named mecanum_ik_generate_messages_py
-
-# Build rule for target.
-mecanum_ik_generate_messages_py: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 mecanum_ik_generate_messages_py
-.PHONY : mecanum_ik_generate_messages_py
-
-# fast build rule for target.
-mecanum_ik_generate_messages_py/fast:
-	$(MAKE) -f CMakeFiles/mecanum_ik_generate_messages_py.dir/build.make CMakeFiles/mecanum_ik_generate_messages_py.dir/build
-.PHONY : mecanum_ik_generate_messages_py/fast
 
 #=============================================================================
 # Target rules for targets named visualization_msgs_generate_messages_nodejs
@@ -701,6 +662,19 @@ geometry_msgs_generate_messages_lisp/fast:
 .PHONY : geometry_msgs_generate_messages_lisp/fast
 
 #=============================================================================
+# Target rules for targets named tf_generate_messages_cpp
+
+# Build rule for target.
+tf_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tf_generate_messages_cpp
+.PHONY : tf_generate_messages_cpp
+
+# fast build rule for target.
+tf_generate_messages_cpp/fast:
+	$(MAKE) -f CMakeFiles/tf_generate_messages_cpp.dir/build.make CMakeFiles/tf_generate_messages_cpp.dir/build
+.PHONY : tf_generate_messages_cpp/fast
+
+#=============================================================================
 # Target rules for targets named roscpp_generate_messages_nodejs
 
 # Build rule for target.
@@ -948,17 +922,30 @@ sensor_msgs_generate_messages_lisp/fast:
 .PHONY : sensor_msgs_generate_messages_lisp/fast
 
 #=============================================================================
-# Target rules for targets named april_tag_detection_generate_messages_lisp
+# Target rules for targets named april_tag_detection_generate_messages_cpp
 
 # Build rule for target.
-april_tag_detection_generate_messages_lisp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 april_tag_detection_generate_messages_lisp
-.PHONY : april_tag_detection_generate_messages_lisp
+april_tag_detection_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 april_tag_detection_generate_messages_cpp
+.PHONY : april_tag_detection_generate_messages_cpp
 
 # fast build rule for target.
-april_tag_detection_generate_messages_lisp/fast:
-	$(MAKE) -f CMakeFiles/april_tag_detection_generate_messages_lisp.dir/build.make CMakeFiles/april_tag_detection_generate_messages_lisp.dir/build
-.PHONY : april_tag_detection_generate_messages_lisp/fast
+april_tag_detection_generate_messages_cpp/fast:
+	$(MAKE) -f CMakeFiles/april_tag_detection_generate_messages_cpp.dir/build.make CMakeFiles/april_tag_detection_generate_messages_cpp.dir/build
+.PHONY : april_tag_detection_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named april_tag_detection_generate_messages_eus
+
+# Build rule for target.
+april_tag_detection_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 april_tag_detection_generate_messages_eus
+.PHONY : april_tag_detection_generate_messages_eus
+
+# fast build rule for target.
+april_tag_detection_generate_messages_eus/fast:
+	$(MAKE) -f CMakeFiles/april_tag_detection_generate_messages_eus.dir/build.make CMakeFiles/april_tag_detection_generate_messages_eus.dir/build
+.PHONY : april_tag_detection_generate_messages_eus/fast
 
 #=============================================================================
 # Target rules for targets named sensor_msgs_generate_messages_nodejs
@@ -974,69 +961,17 @@ sensor_msgs_generate_messages_nodejs/fast:
 .PHONY : sensor_msgs_generate_messages_nodejs/fast
 
 #=============================================================================
-# Target rules for targets named mecanum_ik_generate_messages_cpp
+# Target rules for targets named april_tag_detection_generate_messages_lisp
 
 # Build rule for target.
-mecanum_ik_generate_messages_cpp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 mecanum_ik_generate_messages_cpp
-.PHONY : mecanum_ik_generate_messages_cpp
+april_tag_detection_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 april_tag_detection_generate_messages_lisp
+.PHONY : april_tag_detection_generate_messages_lisp
 
 # fast build rule for target.
-mecanum_ik_generate_messages_cpp/fast:
-	$(MAKE) -f CMakeFiles/mecanum_ik_generate_messages_cpp.dir/build.make CMakeFiles/mecanum_ik_generate_messages_cpp.dir/build
-.PHONY : mecanum_ik_generate_messages_cpp/fast
-
-#=============================================================================
-# Target rules for targets named tf_generate_messages_cpp
-
-# Build rule for target.
-tf_generate_messages_cpp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tf_generate_messages_cpp
-.PHONY : tf_generate_messages_cpp
-
-# fast build rule for target.
-tf_generate_messages_cpp/fast:
-	$(MAKE) -f CMakeFiles/tf_generate_messages_cpp.dir/build.make CMakeFiles/tf_generate_messages_cpp.dir/build
-.PHONY : tf_generate_messages_cpp/fast
-
-#=============================================================================
-# Target rules for targets named mecanum_ik_generate_messages_eus
-
-# Build rule for target.
-mecanum_ik_generate_messages_eus: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 mecanum_ik_generate_messages_eus
-.PHONY : mecanum_ik_generate_messages_eus
-
-# fast build rule for target.
-mecanum_ik_generate_messages_eus/fast:
-	$(MAKE) -f CMakeFiles/mecanum_ik_generate_messages_eus.dir/build.make CMakeFiles/mecanum_ik_generate_messages_eus.dir/build
-.PHONY : mecanum_ik_generate_messages_eus/fast
-
-#=============================================================================
-# Target rules for targets named mecanum_ik_generate_messages_lisp
-
-# Build rule for target.
-mecanum_ik_generate_messages_lisp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 mecanum_ik_generate_messages_lisp
-.PHONY : mecanum_ik_generate_messages_lisp
-
-# fast build rule for target.
-mecanum_ik_generate_messages_lisp/fast:
-	$(MAKE) -f CMakeFiles/mecanum_ik_generate_messages_lisp.dir/build.make CMakeFiles/mecanum_ik_generate_messages_lisp.dir/build
-.PHONY : mecanum_ik_generate_messages_lisp/fast
-
-#=============================================================================
-# Target rules for targets named mecanum_ik_generate_messages_nodejs
-
-# Build rule for target.
-mecanum_ik_generate_messages_nodejs: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 mecanum_ik_generate_messages_nodejs
-.PHONY : mecanum_ik_generate_messages_nodejs
-
-# fast build rule for target.
-mecanum_ik_generate_messages_nodejs/fast:
-	$(MAKE) -f CMakeFiles/mecanum_ik_generate_messages_nodejs.dir/build.make CMakeFiles/mecanum_ik_generate_messages_nodejs.dir/build
-.PHONY : mecanum_ik_generate_messages_nodejs/fast
+april_tag_detection_generate_messages_lisp/fast:
+	$(MAKE) -f CMakeFiles/april_tag_detection_generate_messages_lisp.dir/build.make CMakeFiles/april_tag_detection_generate_messages_lisp.dir/build
+.PHONY : april_tag_detection_generate_messages_lisp/fast
 
 #=============================================================================
 # Target rules for targets named gmock_main
@@ -1153,13 +1088,10 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... mining_map_node"
 	@echo "... mining_map"
 	@echo "... april_tag_detection_generate_messages_py"
-	@echo "... april_tag_detection_generate_messages_eus"
-	@echo "... install/local"
-	@echo "... april_tag_detection_generate_messages_cpp"
-	@echo "... mecanum_ik_generate_messages_py"
 	@echo "... visualization_msgs_generate_messages_nodejs"
 	@echo "... visualization_msgs_generate_messages_lisp"
 	@echo "... geometry_msgs_generate_messages_nodejs"
@@ -1196,6 +1128,7 @@ help:
 	@echo "... sensor_msgs_generate_messages_py"
 	@echo "... tf2_msgs_generate_messages_eus"
 	@echo "... geometry_msgs_generate_messages_lisp"
+	@echo "... tf_generate_messages_cpp"
 	@echo "... roscpp_generate_messages_nodejs"
 	@echo "... actionlib_generate_messages_eus"
 	@echo "... rosgraph_msgs_generate_messages_cpp"
@@ -1215,15 +1148,12 @@ help:
 	@echo "... visualization_msgs_generate_messages_cpp"
 	@echo "... sensor_msgs_generate_messages_eus"
 	@echo "... sensor_msgs_generate_messages_lisp"
+	@echo "... install/local"
+	@echo "... april_tag_detection_generate_messages_cpp"
+	@echo "... april_tag_detection_generate_messages_eus"
 	@echo "... edit_cache"
-	@echo "... april_tag_detection_generate_messages_lisp"
 	@echo "... sensor_msgs_generate_messages_nodejs"
-	@echo "... test"
-	@echo "... mecanum_ik_generate_messages_cpp"
-	@echo "... tf_generate_messages_cpp"
-	@echo "... mecanum_ik_generate_messages_eus"
-	@echo "... mecanum_ik_generate_messages_lisp"
-	@echo "... mecanum_ik_generate_messages_nodejs"
+	@echo "... april_tag_detection_generate_messages_lisp"
 	@echo "... gmock_main"
 	@echo "... gmock"
 	@echo "... gtest_main"

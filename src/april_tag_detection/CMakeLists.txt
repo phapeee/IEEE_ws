@@ -19,7 +19,7 @@ generate_messages(
 )
 
 catkin_package(
-  INCLUDE_DIRS include
+#  INCLUDE_DIRS include
   LIBRARIES april_tag_detection
   CATKIN_DEPENDS roscpp geometry_msgs message_runtime
 #  DEPENDS system_lib
@@ -28,7 +28,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${catkin_INCLUDE_DIRS}/april_tag_detection
+#  ${catkin_INCLUDE_DIRS}/april_tag_detection
 )
 
 add_library(${PROJECT_NAME} src/april_tag_detection.cpp)

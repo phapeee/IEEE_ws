@@ -22,15 +22,22 @@ namespace map{
 	#define M_2PI				(M_PI * 2)
 	#define TO_DEGREE			(180.0 / M_PI)
 	#define BOT_MAX_LINEAR_VELOCITY 	(10)
-	#define BOT_MAX_ANGULAR_VELOCITY 	(1)
+	#define BOT_MAX_ANGULAR_VELOCITY 	(1.5)
 	#define BOT_MIN_ANGULAR_VELOCITY 	(-BOT_MAX_ANGULAR_VELOCITY)
 	#define STOP_RADIUS 			(0.05)
 	#define STOP_ANGLE 			(0.01)
-	#define LINEAR_K			(1)
-	#define ANGULAR_K			(1)
+	#define LINEAR_K			(5)
+	#define ANGULAR_K			(3)
+
+	struct checkPointData {
+		geometry_msgs::Pose destination_pose;
+		geometry_msgs::Pose current_pose;
+		double desired_angle;
+		bool arrived = false;
+	};
 
 	typedef std::function<void(const visualization_msgs::InteractiveMarkerFeedbackConstPtr&)> ProcessFeedback;
-	typedef void (*Action)(bool&,bool&);
+	typedef void (*Action)(bool&,bool&,checkPointData&);
 
 	struct Segment{
 		geometry_msgs::Point p1;
@@ -61,15 +68,13 @@ namespace map{
 		void place(geometry_msgs::Pose);
 	};
 
-	void default_action(bool& started, bool& isDone){ started = true; isDone = true; } 
-
 	struct CheckPoint {
-		geometry_msgs::Pose destination;
+//		geometry_msgs::Pose destination;
+		checkPointData cpData;
 		bool action_done = false;
 		bool destination_action_done = false;
 		bool action_started = false;
 		bool destination_action_started = false;
-		bool arrived = false;
 		Action action;
 		Action destination_action;
 	};
@@ -157,11 +162,11 @@ namespace map{
 			void followPath();
 			bool moveBot(geometry_msgs::Pose);
 			void moveBotMarker(geometry_msgs::Pose);
-			void addCheckPoint(unsigned int, tf::Vector3, double, Action action=default_action, Action dest_action = default_action);
+			void addCheckPoint(unsigned int, tf::Vector3, double, Action, Action);
 			void removeCheckPoint(unsigned int);
 			void static startPath(const visualization_msgs::InteractiveMarkerFeedbackConstPtr&, Map*);
 			void pseudoMoveBot();
-			void static doNothing(bool&, bool&);
+			void static doNothing(bool&, bool&, checkPointData&);
 			void Reset(void);
 			geometry_msgs::Pose getBotPose();
 	};

@@ -40,7 +40,7 @@ template<>
 struct MD5Sum< ::april_tag_detection::GetAprilTag > {
   static const char* value()
   {
-    return "8da4d9ec9691782775e0aa5067c83359";
+    return "11adae4fdc00ea7e90b1c993476c8886";
   }
 
   static const char* value(const ::april_tag_detection::GetAprilTag&) { return value(); }

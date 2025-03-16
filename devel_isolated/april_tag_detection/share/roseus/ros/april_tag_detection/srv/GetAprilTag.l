@@ -70,20 +70,25 @@
 
 (defclass april_tag_detection::GetAprilTagResponse
   :super ros::object
-  :slots (_tag_id _cam_id _poses ))
+  :slots (_tag_count _tag_id _cam_id _poses ))
 
 (defmethod april_tag_detection::GetAprilTagResponse
   (:init
    (&key
+    ((:tag_count __tag_count) 0)
     ((:tag_id __tag_id) (make-array 0 :initial-element 0 :element-type :char))
     ((:cam_id __cam_id) (make-array 0 :initial-element 0 :element-type :char))
     ((:poses __poses) ())
     )
    (send-super :init)
+   (setq _tag_count (round __tag_count))
    (setq _tag_id __tag_id)
    (setq _cam_id __cam_id)
    (setq _poses __poses)
    self)
+  (:tag_count
+   (&optional __tag_count)
+   (if __tag_count (setq _tag_count __tag_count)) _tag_count)
   (:tag_id
    (&optional __tag_id)
    (if __tag_id (setq _tag_id __tag_id)) _tag_id)
@@ -100,6 +105,8 @@
   (:serialization-length
    ()
    (+
+    ;; uint8 _tag_count
+    1
     ;; uint8[] _tag_id
     (* 1    (length _tag_id)) 4
     ;; uint8[] _cam_id
@@ -111,6 +118,8 @@
    (&optional strm)
    (let ((s (if strm strm
               (make-string-output-stream (send self :serialization-length)))))
+     ;; uint8 _tag_count
+       (write-byte _tag_count s)
      ;; uint8[] _tag_id
      (write-long (length _tag_id) s)
      (princ _tag_id s)
@@ -126,6 +135,8 @@
      (if (null strm) (get-output-stream-string s))))
   (:deserialize
    (buf &optional (ptr- 0))
+   ;; uint8 _tag_count
+     (setq _tag_count (sys::peek buf ptr- :char)) (incf ptr- 1)
    ;; uint8[] _tag_id
    (let ((n (sys::peek buf ptr- :integer))) (incf ptr- 4)
      (setq _tag_id (make-array n :element-type :char))
@@ -149,7 +160,7 @@
   :super ros::object
   :slots ())
 
-(setf (get april_tag_detection::GetAprilTag :md5sum-) "8da4d9ec9691782775e0aa5067c83359")
+(setf (get april_tag_detection::GetAprilTag :md5sum-) "11adae4fdc00ea7e90b1c993476c8886")
 (setf (get april_tag_detection::GetAprilTag :datatype-) "april_tag_detection/GetAprilTag")
 (setf (get april_tag_detection::GetAprilTag :request) april_tag_detection::GetAprilTagRequest)
 (setf (get april_tag_detection::GetAprilTag :response) april_tag_detection::GetAprilTagResponse)
@@ -157,12 +168,13 @@
 (defmethod april_tag_detection::GetAprilTagRequest
   (:response () (instance april_tag_detection::GetAprilTagResponse :init)))
 
-(setf (get april_tag_detection::GetAprilTagRequest :md5sum-) "8da4d9ec9691782775e0aa5067c83359")
+(setf (get april_tag_detection::GetAprilTagRequest :md5sum-) "11adae4fdc00ea7e90b1c993476c8886")
 (setf (get april_tag_detection::GetAprilTagRequest :datatype-) "april_tag_detection/GetAprilTagRequest")
 (setf (get april_tag_detection::GetAprilTagRequest :definition-)
       "string tag_id
 string cam_id
 ---
+uint8 tag_count
 uint8[] tag_id
 uint8[] cam_id
 geometry_msgs/Pose[] poses
@@ -191,12 +203,13 @@ float64 z
 float64 w
 ")
 
-(setf (get april_tag_detection::GetAprilTagResponse :md5sum-) "8da4d9ec9691782775e0aa5067c83359")
+(setf (get april_tag_detection::GetAprilTagResponse :md5sum-) "11adae4fdc00ea7e90b1c993476c8886")
 (setf (get april_tag_detection::GetAprilTagResponse :datatype-) "april_tag_detection/GetAprilTagResponse")
 (setf (get april_tag_detection::GetAprilTagResponse :definition-)
       "string tag_id
 string cam_id
 ---
+uint8 tag_count
 uint8[] tag_id
 uint8[] cam_id
 geometry_msgs/Pose[] poses
@@ -227,6 +240,6 @@ float64 w
 
 
 
-(provide :april_tag_detection/GetAprilTag "8da4d9ec9691782775e0aa5067c83359")
+(provide :april_tag_detection/GetAprilTag "11adae4fdc00ea7e90b1c993476c8886")
 
 
