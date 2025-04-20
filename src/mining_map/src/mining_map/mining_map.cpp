@@ -531,18 +531,17 @@ namespace map{
 
 //		ROS_INFO("dis err x: %.2f, dis err y: %.2f, ang err: %.2f", distance_error.x(), distance_error.y(), angle_error);
 
-		if (distance_error.length2() > STOP_RADIUS) {
-			distance_error *= LINEAR_K;
-			if (distance_error.length2() > BOT_MAX_LINEAR_VELOCITY) distance_error = distance_error.normalized() * BOT_MAX_LINEAR_VELOCITY;
-			velocity.x = distance_error.x();
-			velocity.y = distance_error.y();
-		}
-
-		if (abs(angle_error) > STOP_ANGLE) {
-			velocity.z = angle_error * ANGULAR_K;
-			if (velocity.z > BOT_MAX_ANGULAR_VELOCITY) velocity.z = BOT_MAX_ANGULAR_VELOCITY;
-			else if (velocity.z < BOT_MIN_ANGULAR_VELOCITY) velocity.z = BOT_MIN_ANGULAR_VELOCITY;
-		}
+	        if (distance_error.length2() > STOP_RADIUS) {
+	            distance_error *= LINEAR_K;
+	            if (distance_error.length2() > BOT_MAX_LINEAR_VELOCITY) distance_error = distance_error.normalized() * BOT_MAX_LINEAR_VELOCITY;
+	//          ROS_INFO("vel_x: %.2f, vel_y: %.2f", velocity.x , velocity.y);
+	            velocity.x = distance_error.x();
+	            velocity.y = distance_error.y();
+	        }
+	
+	        if (abs(angle_error) > STOP_ANGLE) {                                                                                                                                                   velocity.z = angle_error * ANGULAR_K;                                                                                                                                              if (velocity.z > BOT_MAX_ANGULAR_VELOCITY) velocity.z = BOT_MAX_ANGULAR_VELOCITY;
+	            else if (velocity.z < -BOT_MAX_ANGULAR_VELOCITY) velocity.z = -BOT_MAX_ANGULAR_VELOCITY;
+	        }
 
 		// convert to local velocity
 		double cos_ang = cos(bot_angle);
