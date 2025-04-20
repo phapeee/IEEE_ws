@@ -21,18 +21,22 @@ namespace map{
 	#define H_PI				(M_PI / 2)
 	#define M_2PI				(M_PI * 2)
 	#define TO_DEGREE			(180.0 / M_PI)
-	#define BOT_MAX_LINEAR_VELOCITY 	(10)
-	#define BOT_MAX_ANGULAR_VELOCITY 	(1.5)
-	#define BOT_MIN_ANGULAR_VELOCITY 	(-BOT_MAX_ANGULAR_VELOCITY)
-	#define STOP_RADIUS 			(0.05)
-	#define STOP_ANGLE 			(0.01)
-	#define LINEAR_K			(5)
-	#define ANGULAR_K			(3)
+
+	#define DEFAULT_BOT_MAX_LINEAR_VELOCITY 	(6)
+	#define DEFAULT_BOT_MAX_ANGULAR_VELOCITY 	(0.7)
+	#define DEFAULT_STOP_RADIUS 			(0.001)
+	#define DEFAULT_STOP_ANGLE 			(0.01)
+	#define DEFAULT_LINEAR_K			(3)
+	#define DEFAULT_ANGULAR_K			(4)
+
+	#define CAPPED_BOT_MAX_LINEAR_VELOCITY 		(10)
+	#define CAPPED_BOT_MAX_ANGULAR_VELOCITY 	(1.5)
 
 	struct checkPointData {
 		geometry_msgs::Pose destination_pose;
 		geometry_msgs::Pose current_pose;
 		double desired_angle;
+		uint8_t id;
 		bool arrived = false;
 	};
 
@@ -104,6 +108,15 @@ namespace map{
 			const static uint8_t SOUTH_TAG_ID = 2;
 			const static uint8_t EAST_TAG_ID = 7;
 		private:
+			double BOT_MAX_LINEAR_VELOCITY = DEFAULT_BOT_MAX_LINEAR_VELOCITY;
+            double BOT_MAX_ANGULAR_VELOCITY = DEFAULT_BOT_MAX_ANGULAR_VELOCITY;
+            double STOP_RADIUS = DEFAULT_STOP_RADIUS;
+            double STOP_ANGLE = DEFAULT_STOP_ANGLE;
+            double LINEAR_K = DEFAULT_LINEAR_K;
+            double ANGULAR_K = DEFAULT_ANGULAR_K;
+
+			bool autoSpeedControl = false;
+
 			static uint8_t WEST_TAG_ID;
 			Segment* Walls[WALL_COUNT];
 			Box* Containers[CONTAINER_COUNT];
@@ -168,6 +181,19 @@ namespace map{
 			void pseudoMoveBot();
 			void static doNothing(bool&, bool&, checkPointData&);
 			void Reset(void);
+			void setLinK(double);
+			void setAngK(double);
+			void setStopDist(double);
+			void setMaxLinVel(double);
+			void setMaxAngVel(double);
+			void resetLinK(void);
+			void resetAngK(void);
+			void resetStopDist(void);
+			void resetMaxLinVel(void);
+			void resetMaxAngVel(void);
+			void enableAutoSpdCtrl(void);
+			void disableAutoSpdCtrl(void);
+			void manualSpeedControl(geometry_msgs::Vector3);
 			geometry_msgs::Pose getBotPose();
 	};
 

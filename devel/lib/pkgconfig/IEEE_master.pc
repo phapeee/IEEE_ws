@@ -1,8 +1,0 @@
-prefix=/home/ubuntu/IEEE_ws/devel
-
-Name: IEEE_master
-Description: Description of IEEE_master
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

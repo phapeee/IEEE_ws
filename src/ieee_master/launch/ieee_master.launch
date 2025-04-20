@@ -1,34 +1,31 @@
 <launch>
 
-<!-- run camera node -->
-<!--
-	<param name="cv_camera/device_id" type="int" value="0" />
-	<param name="cv_camera/frame_id" type="str" value="camera" />
-	<param name="cv_camera/rate" type="double" value="30" />
-	<param name="cv_camera/image_width" type="int" value="1920" />
-	<param name="cv_camera/image_height" type="int" value="1080" />
-	<param name="cv_camera/cv_cap_prop_brightness" type="double" value="50" />
-	<param name="cv_camera/cv_cap_prop_contrast" type="double" value="100" />
-	<node name="cv_camera" pkg="cv_camera" type="cv_camera_node" />
-	<node name="image_proc" pkg="image_proc" type="image_proc" ns="cv_camera"/>
--->
-
 <!-- run april tag detection -->
 	<node name="april_tag_detection" pkg="april_tag_detection" type="april_tag_detection_node" output="screen"/>
+<!--
+-->
 
 <!-- run inverse kinematic for mecanum wheel -->
-	<node name="mecanum_ik" pkg="mecanum_ik" type="mecanum_ik_node"/>
+	<node name="mecanum_ik" pkg="mecanum_ik" type="mecanum_ik_node" output="screen"/>
 <!--
 -->
 
 <!-- run mapping control -->
 	<node name="mining_map" pkg="mining_map" type="mining_map_node" output="screen"/>
+<!--
+-->
+
+<!-- run tof sensors -->
+	<node name="tof_sensor" pkg="tof_sensor" type="tof_sensor_node"/>
+<!--
+-->
 
 <!-- run IMU -->
 	<include file="$(find wit_ros_imu)/launch/wit_imu.launch">
 		<param name="arg" value="normal"/>
+        <arg name="imu_port" value="/dev/USB_IMU"/>
 	</include>
-	<node name="imu_tf" pkg="imu_tf" type="imu_tf"/>
+	<node name="imu_tf" pkg="imu_tf" type="imu_tf" output="screen"/>
 <!--
 -->
 

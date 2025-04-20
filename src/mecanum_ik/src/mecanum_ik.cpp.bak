@@ -4,14 +4,16 @@
 #include <nav_msgs/Odometry.h>
 #include <cmath>
 #include <math.h>
-#include <wiringPiSPI.h>
+#include <mecanum_ik/i2c_reader.h>
 #include <wiringPi.h>
 #include <std_srvs/Empty.h>  // Include the service header
-#include <mecanum_ik/adjustPositionSrv.h>  // Include the service header
 
 #define WHEEL_RADIUS	(2.95275591 / 2)
 #define VD_HD		(8.77)
-#define RPS_TO_RPM	(60 / (2 * M_PI))
+#define MOTOR_1_ADD	(0x11)
+#define MOTOR_2_ADD	(0x12)
+#define MOTOR_3_ADD	(0x13)
+#define MOTOR_4_ADD	(0x14)
 #define SAMPLING_PERIOD	(0.01) // second
 #define COEFF_R		(WHEEL_RADIUS/(4 * RPS_TO_RPM))
 #define COEFF_M		(1/VD_HD)
@@ -20,29 +22,17 @@
 #define INIT_THETA	(M_PI_2)
 #define M_2PI           (2 * M_PI)
 #define RESET_PID_PIN	(16)
+#define RPS_TO_RPM	(60 / (2 * M_PI))
 #define COEFF		(RPS_TO_RPM / WHEEL_RADIUS)
-#define X_CORRECTION (20/18)
-
-#define SPI_CHANNEL_0 0     // Use SPI0
-#define SPI_CHANNEL_1 1     // Use SPI0
-#define SPI_SPEED 200000   // Hz SPI clock speed
-#define DATA_LENGTH (sizeof(double) * 4 + 4)
-#define HALF_DATA_LENGTH (DATA_LENGTH / 2)
-#define MOTOR_1 (0)
-#define MOTOR_2 (2)
-#define MOTOR_3 (3)
-#define MOTOR_4 (1)
-#define ACKNOWLEDGED ('$')
 
 ros::Publisher wheel_pub;
 nav_msgs::Odometry pose_est;
 
-union speed_u {
-  uint8_t b[sizeof(double)];
-  double d;
-};
+I2CReader motor_1(MOTOR_1_ADD);
+I2CReader motor_2(MOTOR_2_ADD);
+I2CReader motor_3(MOTOR_3_ADD);
+I2CReader motor_4(MOTOR_4_ADD);
 
-union speed_u measured_speed[4], desired_speed[4];
 
 double angle = INIT_THETA;
 bool reading = false;
@@ -50,13 +40,7 @@ bool sending = false;
 bool shutdown_wheel = false;
 bool newPose = false;
 bool resetWheelTrig = false;
-
-void setSpeed(double V1, double V2, double V3, double V4){
-	desired_speed[MOTOR_1].d = V1;
-	desired_speed[MOTOR_2].d = V2;
-	desired_speed[MOTOR_3].d = V3;
-	desired_speed[MOTOR_4].d = V4;
-}
+float desired_spd[4];
 
 void resetWheel(){
 	static ros::Time timer;
@@ -76,42 +60,13 @@ void resetWheel(){
 	else if ((ros::Time::now() - timer).toSec() >= 2){
 		resetWheelTrig = false;
 		timer_start = false;
-		setSpeed(0, 0, 0, 0);
+		motor_1.sendDesiredSpeed(0);
+		motor_2.sendDesiredSpeed(0);
+		motor_3.sendDesiredSpeed(0);
+		motor_4.sendDesiredSpeed(0);
 	}
 }
 
-// Function to send desired speed (float) and receive measured speed (float)
-void send_speed_and_receive() {
-    uint8_t send_buffer[DATA_LENGTH];
-    uint8_t index;
-    for (int i=0; i<4; i++){
-        for (int j=0; j<sizeof(double); j++){
-            send_buffer[i * sizeof(double) + j + (i >= 2 ? 2:0)] = desired_speed[i].b[j];
-        }
-    }
-    send_buffer[HALF_DATA_LENGTH-1] = 0;
-    send_buffer[HALF_DATA_LENGTH-2] = 0;
-    send_buffer[DATA_LENGTH-1] = 0;
-    send_buffer[DATA_LENGTH-2] = 0;
-
-    wiringPiSPIDataRW(SPI_CHANNEL_0, send_buffer, DATA_LENGTH / 2);  // SPI transaction
-    wiringPiSPIDataRW(SPI_CHANNEL_1, send_buffer + DATA_LENGTH / 2, DATA_LENGTH / 2);  // SPI transaction
-
-    if (send_buffer[HALF_DATA_LENGTH-1] != ACKNOWLEDGED || send_buffer[HALF_DATA_LENGTH-2] != ACKNOWLEDGED){
-        ROS_ERROR("Left wheels communication failed!");
-    }
-
-    if (send_buffer[DATA_LENGTH-1] != ACKNOWLEDGED || send_buffer[DATA_LENGTH-2] != ACKNOWLEDGED){
-        ROS_ERROR("Right wheels communication failed!");
-    }
-
-    for (int i=0; i<4; i++){
-        for (int j=0; j<sizeof(double); j++){
-            measured_speed[i].b[j] = send_buffer[i * sizeof(double) + j + (i >= 2 ? 2:0)];
-            //std::cout << send_buffer[i * sizeof(double) + j] << " ";
-        }
-    }
-}
 
 // calculate the local speed of bot with given 3D vector velocity in which x and y components are desired local linear velocities and z component desried rotaiional velocity
 //     | 1 -1 -(l+w) | |x|
@@ -125,17 +80,28 @@ void inverse_kinematic_callback(const geometry_msgs::Vector3::ConstPtr &bot_vel)
 	double div_y = bot_vel->y * COEFF;
 	double mul_z = VD_HD * bot_vel->z * COEFF;
 
-	setSpeed(div_x - div_y - mul_z, div_x + div_y - mul_z, div_x - div_y + mul_z, div_x + div_y + mul_z);
+	if (!motor_1.sendDesiredSpeed(div_x - div_y - mul_z) ||
+	    !motor_2.sendDesiredSpeed(div_x + div_y - mul_z) ||
+	    !motor_3.sendDesiredSpeed(div_x - div_y + mul_z) ||
+	    !motor_4.sendDesiredSpeed(div_x + div_y + mul_z)
+	) resetWheelTrig = true;
 }
 
 void publishPose()
 {
 	pose_est.header.stamp = ros::Time::now();
-
-	double wheel_1 = measured_speed[MOTOR_1].d * COEFF_R;
-	double wheel_2 = measured_speed[MOTOR_2].d * COEFF_R;
-	double wheel_3 = measured_speed[MOTOR_3].d * COEFF_R;
-	double wheel_4 = measured_speed[MOTOR_4].d * COEFF_R;
+	if (resetWheelTrig){
+		wheel_pub.publish(pose_est);
+		return;
+	}
+	double wheel_sp_1 = motor_1.readMeasuredSpeed();
+	double wheel_sp_2 = motor_2.readMeasuredSpeed();
+	double wheel_sp_3 = motor_3.readMeasuredSpeed();
+	double wheel_sp_4 = motor_4.readMeasuredSpeed();
+	double wheel_1 = wheel_sp_1 * COEFF_R;
+	double wheel_2 = wheel_sp_2 * COEFF_R;
+	double wheel_3 = wheel_sp_3 * COEFF_R;
+	double wheel_4 = wheel_sp_4 * COEFF_R;
 
 	if (wheel_1 != 0.0 || wheel_2 != 0.0 ||
 		wheel_3 != 0.0 || wheel_4 != 0.0){
@@ -150,17 +116,11 @@ void publishPose()
 		pose_est.pose.pose.orientation.w = cos(temp);
 		pose_est.pose.pose.orientation.z = sin(temp);
 	}
-
 	wheel_pub.publish(pose_est);
 }
 
 bool shutdownWheel(std_srvs::Empty::Request &req, std_srvs::Empty::Response &res) {
 	shutdown_wheel = true;
-	return true;
-}
-
-bool adjustPosition(mecanum_ik::adjustPositionSrv::Request &req, mecanum_ik::adjustPositionSrv::Response &res) {
-	pose_est.pose.pose.position = req.position;
 	return true;
 }
 
@@ -171,23 +131,10 @@ int main(int argc, char** argv){
 	ros::Subscriber bot_vel_sub = nh.subscribe("Bot_Velocities", 1, inverse_kinematic_callback);
 	wheel_pub = nh.advertise<nav_msgs::Odometry>("odom", 1000);
 	ros::ServiceServer service = nh.advertiseService("shutdown_wheel", shutdownWheel);
-	ros::ServiceServer service1 = nh.advertiseService("mecanum_ik_srv", adjustPosition);
 
-    if (wiringPiSetupGpio() == -1) {  // Use Broadcom GPIO numbering
-	    std::cerr << "WiringPi initialization failed!" << std::endl;
-	    return -1;
-    }
-    pinMode(RESET_PID_PIN, OUTPUT);
-
-    // Initialize SPI
-    if (wiringPiSPISetup(SPI_CHANNEL_0, SPI_SPEED) < 0 || wiringPiSPISetup(SPI_CHANNEL_1, SPI_SPEED) < 0) {
-        std::cerr << "Failed to setup SPI" << std::endl;
-        return -1;
-    }
-
-    resetWheelTrig = true;
-    while (resetWheelTrig) resetWheel();
-
+	wiringPiSetupGpio();
+	pinMode(RESET_PID_PIN, OUTPUT);
+	resetWheelTrig = true;
 	pose_est.header.frame_id = "odom_link";
 
 	pose_est.pose.pose.position.x = INIT_X;
@@ -208,8 +155,8 @@ int main(int argc, char** argv){
 	}
 
 	while (ros::ok() && !shutdown_wheel){
-		send_speed_and_receive();
 		publishPose();
+		if (resetWheelTrig) resetWheel();
 		ros::spinOnce();
 		rate.sleep();
 	}

@@ -10,6 +10,7 @@ project(imu_tf)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf2_ros
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -104,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES imu_tf
-#  CATKIN_DEPENDS roscpp tf2_ros
+  CATKIN_DEPENDS roscpp tf tf2_ros
 #  DEPENDS system_lib
 )
 

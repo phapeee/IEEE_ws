@@ -564,6 +564,10 @@ namespace map{
 		return false;
 	}
 
+    void Map::manualSpeedControl(geometry_msgs::Vector3 velocity){
+         bot_vel_pub.publish(velocity);
+    }
+
 	void Map::moveBotMarker(geometry_msgs::Pose pose){
 		visualization_msgs::InteractiveMarker int_marker;
 		if (Map::server->get("Bot", int_marker)){
@@ -759,5 +763,36 @@ namespace map{
 		bot_vel_pub.publish(velocity);
 		if (reset) reset();
 	}
+
+    void Map::setLinK(double K){
+		LINEAR_K = K;
+	}
+    void Map::setAngK(double K){
+		ANGULAR_K = K;
+    }
+    void Map::setStopDist(double dist){
+		STOP_RADIUS = dist;
+    }
+    void Map::setMaxLinVel(double vel){
+    	BOT_MAX_LINEAR_VELOCITY = vel;
+    }
+    void Map::setMaxAngVel(double vel){
+    	BOT_MAX_ANGULAR_VELOCITY = vel;
+    }
+    void Map::resetLinK(){
+		LINEAR_K = DEFAULT_LINEAR_K;
+    }
+    void Map::resetAngK(){
+		ANGULAR_K = DEFAULT_ANGULAR_K;
+    }
+	void Map::resetStopDist(){
+		STOP_RADIUS = DEFAULT_STOP_RADIUS;
+	}
+    void Map::resetMaxLinVel(){
+		BOT_MAX_LINEAR_VELOCITY = DEFAULT_BOT_MAX_LINEAR_VELOCITY;
+    }
+    void Map::resetMaxAngVel(){
+		BOT_MAX_ANGULAR_VELOCITY = DEFAULT_BOT_MAX_ANGULAR_VELOCITY;
+    }
 }
 

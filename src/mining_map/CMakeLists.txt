@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   serial
   mecanum_ik
   april_tag_detection
+  tof_sensor
 )
 
 ## System dependencies are found with CMake's conventions

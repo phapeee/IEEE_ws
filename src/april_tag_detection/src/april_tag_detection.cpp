@@ -56,7 +56,7 @@ std::vector<tag_data> tag_poses;
 
 void broadCastPose(const double pose_data[8])
 {
-	static tf2_ros::TransformBroadcaster broadcaster;
+//	static tf2_ros::TransformBroadcaster broadcaster;
 	uint8_t tag_id = pose_data[1];
 	uint8_t cam_id = pose_data[0];
 	if (abs(tag_id) > 7) return;
@@ -99,12 +99,13 @@ void broadCastPose(const double pose_data[8])
 	tag.pose.orientation.w = q.w();
 	tag_poses.push_back(tag);
 
-	if (angle_set && (std::abs(yaw_angle) < ANGLE_THRESHOLD ||  // Check for 0
+/*	if (angle_set && (std::abs(yaw_angle) < ANGLE_THRESHOLD ||  // Check for 0
     	std::abs(std::abs(yaw_angle) - M_PI_2) < ANGLE_THRESHOLD ||  // Check for π/2 (90°)
 		std::abs(std::abs(yaw_angle) - M_PI) < ANGLE_THRESHOLD)){
 		broadcaster.sendTransform(tag_transform);
 		tag_ready[tag_id] = true;
 	}
+*/
 }
 
 // Function to request data from the client
@@ -170,7 +171,10 @@ bool getAprilTagPose(april_tag_detection::GetAprilTag::Request &req,
 	}
 
 	unsigned int tag_size = tag_poses.size();
-	if (tag_size == 0) return false;
+	if (tag_size == 0) {
+		 res.tag_count = 0;
+		return true;
+	}
 
 	service_sending = true;
 

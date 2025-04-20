@@ -1,8 +1,0 @@
-prefix=/home/ubuntu/IEEE_ws/install_isolated
-
-Name: mecanum_ik
-Description: Description of mecanum_ik
-Version: 0.0.0
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib -lmecanum_ik -li2c_reader
-Requires: geometry_msgs roscpp

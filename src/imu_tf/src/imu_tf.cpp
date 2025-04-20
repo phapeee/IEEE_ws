@@ -3,6 +3,8 @@
 #include <tf2_ros/static_transform_broadcaster.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Matrix3x3.h>
+#include <tf/transform_datatypes.h>
 #include <cmath>
 
 #define WAITING_TIME	(2.5)	// Wait for IMU to be stablized
@@ -16,20 +18,33 @@ sensor_msgs::Imu calibrated_imu;
 void imuPoseCallback(const sensor_msgs::Imu& msg){
 	static bool calibrated = false;
 	static bool waiting = false;
-	tf2::Quaternion q(msg.orientation.x, msg.orientation.y,
-			msg.orientation.z, msg.orientation.w);
+	static bool calibrating = false;
+	static ros::Time timer;
+
 	if (!calibrated){
-		calibrated = true;
+		if (!calibrating){
+			timer = ros::Time::now();
+			calibrating = true;
+			return;
+		}
+		else if ((ros::Time::now() - timer).toSec() < 5) {
+			return;
+		}
+		tf2::Quaternion q(msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w);
+
 		// Create a quaternion for initial angle rotation around Z-axis
-        	tf2::Quaternion rotation_quat;
-        	rotation_quat.setRPY(0, 0, INIT_ANGLE);  // Yaw angle
+    	tf2::Quaternion rotation_quat;
+    	rotation_quat.setRPY(0, 0, INIT_ANGLE);  // Yaw angle
 
 		offset_imu = rotation_quat * q.inverse();
-        	offset_imu.normalize();
+    	offset_imu.normalize();
 
+		calibrated = true;
 		ROS_INFO("IMU calibrated!");
-		return;
 	}
+
+	tf2::Quaternion q(msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w);
+
 	q *= offset_imu;
 	q.normalize();
 
@@ -38,6 +53,13 @@ void imuPoseCallback(const sensor_msgs::Imu& msg){
 	calibrated_imu.orientation.y = q.y();
 	calibrated_imu.orientation.z = q.z();
 	calibrated_imu.orientation.w = q.w();
+
+	calibrated_imu.orientation_covariance = msg.orientation_covariance;
+//	double roll, pitch, yaw;
+//	tf2::Matrix3x3(q).getRPY(roll, pitch, yaw);
+//	ROS_INFO("R: %.3f, P: %.3f, Y:%.3f", roll * 180 / M_PI, pitch * 180 / M_PI, yaw * 180 / M_PI);
+//	double yaw = tf::getYaw(calibrated_imu.orientation) * 180 / M_PI;
+//	ROS_INFO("%.2f", yaw);
 	imu_pub.publish(calibrated_imu);
 }
 

@@ -60,6 +60,7 @@
   <depend>tf</depend>
   <depend>interactive_markers</depend>
   <depend>serial</depend>
+  <depend>mecanum_ik</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
